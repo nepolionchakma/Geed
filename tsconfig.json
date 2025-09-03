@@ -1,4 +1,4 @@
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
-  "include": ["src/**/*","src/Services/PlaybackService.js"]
+  "include": ["src/**/*","src/Services/PlaybackService.js","src/Redux/Store/SongSlice.ts","src/Redux/Store/Store.ts"],
 }

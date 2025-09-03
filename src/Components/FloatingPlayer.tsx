@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {colors} from '../Constants/Colors';
 import {fontSizes, spacing} from '../Constants/dimensions';
 import {NextButton, PlayPauseButton, PreviousButton} from './PlayerColtroller';
@@ -21,8 +21,10 @@ import TrackPlayer, {
   State,
   usePlaybackState,
 } from 'react-native-track-player';
-import {addTrack, setupPlayer} from '../Services/PlaybackService';
+// import {addTrack, setupPlayer} from '../Services/PlaybackService';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
+import {RootState} from '../Redux/Store/Store';
 
 const FloatingPlayer = () => {
   const navigation =
@@ -30,6 +32,8 @@ const FloatingPlayer = () => {
   const progress = useSharedValue(30);
   const min = useSharedValue(0);
   const max = useSharedValue(100);
+
+  const data = useSelector((state: RootState) => state.tracks);
 
   const imageUrl =
     'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg';
@@ -42,17 +46,17 @@ const FloatingPlayer = () => {
 
   // Extract the state from the `playBackState`
   const state = 'state' in playBackState ? playBackState.state : undefined;
-  const [isPlayerReady, setIsPlayerReady] = useState(false);
-  async function setup() {
-    let isSetup = await setupPlayer();
-    if (isSetup) {
-      await addTrack();
-    }
-    return setIsPlayerReady(isSetup);
-  }
-  useEffect(() => {
-    setup();
-  }, []);
+  // const [isPlayerReady, setIsPlayerReady] = useState(false);
+  // async function setup() {
+  //   let isSetup = await setupPlayer();
+  //   if (isSetup) {
+  //     await addTrack();
+  //   }
+  //   return setIsPlayerReady(isSetup);
+  // }
+  // useEffect(() => {
+  //   setup();
+  // }, []);
 
   const skipToNext = async () => {
     await TrackPlayer.skipToNext();
@@ -76,7 +80,7 @@ const FloatingPlayer = () => {
       }
     }
   };
-  if (!isPlayerReady) {
+  if (data?.isReady) {
     return (
       <SafeAreaView>
         <ActivityIndicator size="large" color={colors.iconPrimary} />

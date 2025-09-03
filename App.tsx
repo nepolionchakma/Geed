@@ -1,34 +1,12 @@
-import {Platform, StatusBar, StyleSheet, useColorScheme} from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import Drawer from './src/Navigations/Drawer';
-import {NavigationContainer} from '@react-navigation/native';
-import {
-  initialWindowMetrics,
-  SafeAreaProvider,
-} from 'react-native-safe-area-context';
-
+import {Provider} from 'react-redux';
+import {store} from './src/Redux/Store/Store';
+import Main from './src/Main';
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
-    <GestureHandlerRootView style={styles.GestureHandlerRootViewContainer}>
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          translucent={Platform.OS === 'ios'}
-        />
-        <NavigationContainer>
-          <Drawer />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <Main />
+    </Provider>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({
-  GestureHandlerRootViewContainer: {
-    flex: 1,
-  },
-});

@@ -1,5 +1,4 @@
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
-import {RecommendedSongs} from '../Data/Songs';
 
 export async function setupPlayer() {
   let isSetup = false;
@@ -28,8 +27,8 @@ export async function setupPlayer() {
     return isSetup;
   }
 }
-export async function addTrack() {
-  await TrackPlayer.add(RecommendedSongs);
+export async function addTrack(Songs) {
+  await TrackPlayer.add(Songs);
   await TrackPlayer.setRepeatMode(RepeatMode.Queue); // for play again and again repeat mode
 }
 export async function playbackService() {
