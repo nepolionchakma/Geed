@@ -1,10 +1,10 @@
 import {Provider} from 'react-redux';
 import {store} from './src/Redux/Store/Store';
-import Main from './src/Main';
+import MainApp from './src/MainApp';
 const App = () => {
   return (
     <Provider store={store}>
-      <Main />
+      <MainApp />
     </Provider>
   );
 };

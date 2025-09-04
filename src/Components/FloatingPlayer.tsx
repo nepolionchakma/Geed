@@ -23,8 +23,8 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 // import {addTrack, setupPlayer} from '../Services/PlaybackService';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
 import {RootState} from '../Redux/Store/Store';
+import {useAppSelector} from '../Redux/Hooks/Hooks';
 
 const FloatingPlayer = () => {
   const navigation =
@@ -33,8 +33,8 @@ const FloatingPlayer = () => {
   const min = useSharedValue(0);
   const max = useSharedValue(100);
 
-  const data = useSelector((state: RootState) => state.tracks);
-
+  const data = useAppSelector((state: RootState) => state.tracks);
+  console.log(data, 'data');
   const imageUrl =
     'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg';
 
@@ -80,7 +80,7 @@ const FloatingPlayer = () => {
       }
     }
   };
-  if (data?.isReady) {
+  if (!data.isReady) {
     return (
       <SafeAreaView>
         <ActivityIndicator size="large" color={colors.iconPrimary} />

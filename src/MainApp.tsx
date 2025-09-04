@@ -6,20 +6,15 @@ import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
 import {useEffect} from 'react';
-import {useDispatch} from 'react-redux';
 import {addTrack, setupPlayer} from './Services/PlaybackService';
 import {RecommendedSongs} from './Data/Songs';
 import {setIsReady} from './Redux/Slices/SongSlice';
 import Drawer from './Navigations/Drawer';
-// import {addTrack, setupPlayer} from './src/Services/PlaybackService';
-// import {RecommendedSongs} from './src/Data/Songs';
-// import Drawer from './src/Navigations/Drawer';
-// import {setIsReady} from './src/Redux/Slices/SongSlice';
-// import store from './src/Redux/Store/Store';
+import {useAppDispatch} from './Redux/Hooks/Hooks';
 
-const Main = () => {
+const MainApp = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // Setup and dispatch once on initial render
@@ -28,9 +23,10 @@ const Main = () => {
         let isSetup = await setupPlayer();
         if (isSetup) {
           await addTrack(RecommendedSongs);
+          // Dispatch the setup status (isReady)
+          dispatch(setIsReady(isSetup));
+          console.log(isSetup, 'isSetup');
         }
-        // Dispatch the setup status (isReady)
-        dispatch(setIsReady(isSetup));
       } catch (error) {
         console.error('Error during setup:', error);
       }
@@ -54,7 +50,7 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default MainApp;
 
 const styles = StyleSheet.create({
   GestureHandlerRootViewContainer: {
