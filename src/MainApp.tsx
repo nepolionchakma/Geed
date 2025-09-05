@@ -8,32 +8,37 @@ import {
 import {useEffect} from 'react';
 import {addTrack, setupPlayer} from './Services/PlaybackService';
 import {RecommendedSongs} from './Data/Songs';
-import {setIsReady} from './Redux/Slices/SongSlice';
+import {setIsReady, setSong} from './Redux/Slices/SongSlice';
 import Drawer from './Navigations/Drawer';
 import {useAppDispatch} from './Redux/Hooks/Hooks';
+import TrackPlayer from 'react-native-track-player';
 
 const MainApp = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // Setup and dispatch once on initial render
     const setup = async () => {
       try {
-        let isSetup = await setupPlayer();
+        const isSetup = await setupPlayer(); // Ensure player is set up only once
         if (isSetup) {
           await addTrack(RecommendedSongs);
-          // Dispatch the setup status (isReady)
+          dispatch(setSong(RecommendedSongs));
           dispatch(setIsReady(isSetup));
-          console.log(isSetup, 'isSetup');
+          console.log('TrackPlayer is ready:', isSetup);
         }
       } catch (error) {
         console.error('Error during setup:', error);
       }
     };
 
-    setup(); // Call setup on mount
-  }, [dispatch]); // Empty dependency array ensures this runs once
+    setup(); // Call setup once
+
+    return () => {
+      TrackPlayer.stop(); // Clean up and stop player when the component unmounts
+      TrackPlayer.reset();
+    };
+  }, [dispatch]); // Only run once when component mounts
 
   return (
     <GestureHandlerRootView style={styles.GestureHandlerRootViewContainer}>

@@ -7,17 +7,17 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 
 interface Props {
   text: string;
   animationThreshold: number;
   style?: any;
 }
-const MovingText = ({ text, animationThreshold, style }: Props) => {
+const MovingText = ({text, animationThreshold, style}: Props) => {
   const translateX = useSharedValue(0);
-  const shouldAnimate = text.length >= animationThreshold;
-  const textWidth = text.length * 3;
+  const shouldAnimate = text?.length >= animationThreshold;
+  const textWidth = text?.length * 3;
 
   useEffect(() => {
     if (!shouldAnimate) return;
@@ -36,14 +36,13 @@ const MovingText = ({ text, animationThreshold, style }: Props) => {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: translateX.value }],
+      transform: [{translateX: translateX.value}],
     };
   });
   return (
     <Animated.Text
       numberOfLines={1}
-      style={[animatedStyle, style, shouldAnimate && { width: 9999 }]}
-    >
+      style={[animatedStyle, style, shouldAnimate && {width: 9999}]}>
       {text}
     </Animated.Text>
   );

@@ -1,6 +1,4 @@
-import {Track} from 'react-native-track-player';
-
-export const RecommendedSongs: Track[] = [
+export const RecommendedSongs = [
   {
     id: 1,
     title: 'Song 1',

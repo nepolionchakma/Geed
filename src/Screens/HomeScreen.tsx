@@ -1,17 +1,19 @@
-import { FlatList, StyleSheet } from 'react-native';
+import {FlatList, StyleSheet} from 'react-native';
 import React from 'react';
-import { colors } from '../Constants/Colors';
+import {colors} from '../Constants/Colors';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../Components/Header';
-import { fontFamilies } from '../Constants/Fonts';
-import { fontSizes, spacing } from '../Constants/dimensions';
+import {fontFamilies} from '../Constants/Fonts';
+import {fontSizes, spacing} from '../Constants/dimensions';
 // import Card from '../Components/Card';
 import CardWithCategory from '../Components/CardWithCategory';
 import FloatingPlayer from '../Components/FloatingPlayer';
-import { SongsWithCategory } from '../Data/SongsWithCategory';
+import {SongsWithCategory} from '../Data/SongsWithCategory';
+import {useActiveTrack} from 'react-native-track-player';
 
 function HomeScreen() {
+  const activeTrack = useActiveTrack();
   return (
     <SafeAreaView style={styles.container}>
       <Header />
@@ -20,7 +22,7 @@ function HomeScreen() {
         keyExtractor={(item, index) => (item.id + index).toString()}
         data={SongsWithCategory}
         renderItem={CardWithCategory}
-        contentContainerStyle={{ gap: 22, paddingBottom: spacing.sm }}
+        contentContainerStyle={{gap: 22, paddingBottom: spacing.sm}}
         showsVerticalScrollIndicator={false}
       />
       <FloatingPlayer />

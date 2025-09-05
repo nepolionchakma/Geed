@@ -1,22 +1,22 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import { fontSizes, spacing } from '../Constants/dimensions';
-import { colors } from '../Constants/Colors';
-import { fontFamilies } from '../Constants/Fonts';
+import {fontSizes, spacing} from '../Constants/dimensions';
+import {colors} from '../Constants/Colors';
+import {fontFamilies} from '../Constants/Fonts';
 import Card from './Card';
 
-const CardWithCategory = ({ item }: any) => {
+const CardWithCategory = ({item}: any) => {
   console.log(item, 'item');
   return (
     <View style={styles.container}>
       <Text style={styles.txtHeader}>{item.title}</Text>
       <FlatList
         data={item.songs}
-        renderItem={() => <Card songs={item.songs} />}
+        renderItem={Card}
         horizontal
         showsHorizontalScrollIndicator={false}
         ItemSeparatorComponent={() => (
-          <View style={{ marginHorizontal: spacing.xs }} />
+          <View style={{marginHorizontal: spacing.xs}} />
         )}
         // contentContainerStyle={{ paddingHorizontal: spacing.md }}
       />

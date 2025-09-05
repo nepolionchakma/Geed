@@ -5,7 +5,7 @@ interface Song {
   id: number;
   title: string;
   artist: string;
-  image: string;
+  artwork: string;
   url: string;
 }
 
@@ -16,7 +16,7 @@ const initialState = {
       id: 1,
       title: 'Song 1',
       artist: 'Artist 1',
-      image:
+      artwork:
         'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg',
       url: 'https://music.com.bd/download/Music/F/Fuad/BONNO/13%20-%20Fuad%20Ft.%20Upol%20-%20Tor%20Jonno%20Bonno%20(music.com.bd).mp3',
     },
@@ -31,8 +31,9 @@ export const songSlice = createSlice({
   name: 'track',
   initialState,
   reducers: {
-    setSong: (state, action: PayloadAction<Song>) => {
-      state.songs.push(action.payload);
+    setSong: (state, action: PayloadAction<Song[]>) => {
+      const newSongs = action.payload;
+      state.songs = newSongs;
     },
     setIsPlaying: (state, action: PayloadAction<boolean>) => {
       state.isPlaying = action.payload;

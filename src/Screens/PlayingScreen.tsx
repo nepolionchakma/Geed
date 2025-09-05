@@ -1,5 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../Constants/Colors';
 import {fontSizes, iconSizes, spacing} from '../Constants/dimensions';
@@ -13,13 +20,12 @@ import {
   PreviousButton,
 } from '../Components/PlayerColtroller';
 import TrackPlayer, {
-  Event,
   PlaybackState,
   State,
   Track,
+  useActiveTrack,
   usePlaybackState,
   useProgress,
-  useTrackPlayerEvents,
 } from 'react-native-track-player';
 
 export interface SongInfoProps {
@@ -28,23 +34,28 @@ export interface SongInfoProps {
 
 const PlayingScreen = () => {
   const isLiked = true;
-  const {position, duration} = useProgress();
-
-  const progress = useSharedValue(position);
-  const min = useSharedValue(0);
-  const max = useSharedValue(duration);
-
-  // const playBackState = usePlaybackState();
   const navigation = useNavigation();
-  // const imageUrl =
-  //   'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg';
+  const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
+  const state = 'state' in playBackState ? playBackState.state : undefined;
+  const {position, duration} = useProgress();
+  const activeTrack = useActiveTrack();
+  const progress = useSharedValue(0);
+  const min = useSharedValue(0);
+  const max = useSharedValue(0);
+
+  useEffect(() => {
+    max.value = duration;
+  }, [duration, max]);
+
+  useEffect(() => {
+    progress.value = position;
+  }, [position, progress]);
+
   const handleBackPress = () => {
     navigation.goBack();
   };
-  const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
 
   // Extract the state from the `playBackState`
-  const state = 'state' in playBackState ? playBackState.state : undefined;
 
   const skipToNext = async () => {
     await TrackPlayer.skipToNext();
@@ -68,16 +79,24 @@ const PlayingScreen = () => {
       }
     }
   };
-  const [track, setTrack] = useState<Track | null>();
-  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-    switch (event.type) {
-      case Event.PlaybackTrackChanged:
-        const track = await TrackPlayer.getTrack(event.nextTrack);
-        console.log(track);
-        setTrack(track);
-        break;
-    }
-  });
+  // const [track, setTrack] = useState<Track | null>();
+  // useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+  //   switch (event.type) {
+  //     case Event.PlaybackTrackChanged:
+  //       const track = await TrackPlayer.getTrack(event.nextTrack);
+  //       console.log(track);
+  //       setTrack(track);
+  //       break;
+  //   }
+  // });
+  if (!activeTrack) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={colors.textPrimary} />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerIcons}>
@@ -93,17 +112,17 @@ const PlayingScreen = () => {
       <View style={styles.content}>
         <View style={styles.coverImageContainer}>
           <Image
-            source={{uri: track?.artwork?.toString()}}
+            source={{uri: activeTrack?.artwork?.toString()}}
             style={[styles.coverImage]}
           />
         </View>
         <View style={styles.contentMiddle}>
           <View style={styles.contentText}>
             <Text style={styles.textTitle} numberOfLines={1}>
-              {track?.title}
+              {activeTrack?.title}
             </Text>
             <Text style={styles.textArtist} numberOfLines={1}>
-              {track?.artist} . {track?.album}
+              {activeTrack?.artist} . {activeTrack?.album}
             </Text>
           </View>
         </View>
@@ -154,20 +173,25 @@ const PlayingScreen = () => {
           </View>
           <View style={styles.contentSlider}>
             <Slider
-              style={styles.slider}
               progress={progress}
               minimumValue={min}
               maximumValue={max}
+              onSlidingComplete={async value => {
+                await TrackPlayer.seekTo(value);
+                await TrackPlayer.play();
+              }}
               theme={{
                 minimumTrackTintColor: colors.minimumTrackTintColor,
                 maximumTrackTintColor: colors.maximumTrackTintColor,
               }}
+              style={styles.slider}
+              bubbleContainerStyle={{display: 'none'}}
             />
           </View>
           <View style={styles.actionContainer}>
             <PreviousButton
               size={spacing.xl}
-              onPress={() => skipToPrevious}
+              onPress={() => skipToPrevious()}
               name="skip-previous"
             />
             <PlayPauseButton
@@ -177,7 +201,7 @@ const PlayingScreen = () => {
             />
             <NextButton
               size={spacing.xl}
-              onPress={() => skipToNext}
+              onPress={() => skipToNext()}
               name="skip-next"
             />
           </View>
@@ -278,6 +302,11 @@ const styles = StyleSheet.create({
   actionContainer: {
     flexDirection: 'row',
     gap: 40,
+    justifyContent: 'center',
+  },
+  loading: {
+    flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
   },
 });

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {colors} from '../Constants/Colors';
 import {fontSizes, spacing} from '../Constants/dimensions';
 import {NextButton, PlayPauseButton, PreviousButton} from './PlayerColtroller';
@@ -19,7 +19,9 @@ import {RootStackParamList} from '../Types/NavigationTypes';
 import TrackPlayer, {
   PlaybackState,
   State,
+  useActiveTrack,
   usePlaybackState,
+  useProgress,
 } from 'react-native-track-player';
 // import {addTrack, setupPlayer} from '../Services/PlaybackService';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -27,36 +29,33 @@ import {RootState} from '../Redux/Store/Store';
 import {useAppSelector} from '../Redux/Hooks/Hooks';
 
 const FloatingPlayer = () => {
+  const activeTrack = useActiveTrack();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const progress = useSharedValue(30);
+  const {position, duration} = useProgress();
+  // console.log(position, 'position');
+  const progress = useSharedValue(0);
   const min = useSharedValue(0);
-  const max = useSharedValue(100);
+  const max = useSharedValue(0);
 
-  const data = useAppSelector((state: RootState) => state.tracks);
-  console.log(data, 'data');
-  const imageUrl =
-    'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg';
+  useEffect(() => {
+    max.value = duration;
+  }, [duration, max]);
+
+  useEffect(() => {
+    progress.value = position;
+  }, [position, progress]);
+
+  // const imageUrl =
+  //   'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg';
 
   const handleOpenPlayingScreen = () => {
     navigation.navigate('PlayingScreen');
   };
 
+  const data = useAppSelector((state: RootState) => state.tracks);
   const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
-
-  // Extract the state from the `playBackState`
   const state = 'state' in playBackState ? playBackState.state : undefined;
-  // const [isPlayerReady, setIsPlayerReady] = useState(false);
-  // async function setup() {
-  //   let isSetup = await setupPlayer();
-  //   if (isSetup) {
-  //     await addTrack();
-  //   }
-  //   return setIsPlayerReady(isSetup);
-  // }
-  // useEffect(() => {
-  //   setup();
-  // }, []);
 
   const skipToNext = async () => {
     await TrackPlayer.skipToNext();
@@ -87,32 +86,38 @@ const FloatingPlayer = () => {
       </SafeAreaView>
     );
   }
+  console.log(activeTrack, 'activeTrack');
   return (
     <View style={styles.container}>
       <Slider
-        style={styles.slider}
         progress={progress}
         minimumValue={min}
         maximumValue={max}
+        onSlidingComplete={value => TrackPlayer.seekTo(value)}
         theme={{
           minimumTrackTintColor: colors.minimumTrackTintColor,
           maximumTrackTintColor: colors.maximumTrackTintColor,
         }}
+        style={styles.slider}
+        bubbleContainerStyle={{display: 'none'}}
       />
       <TouchableOpacity
         style={styles.containerFloatingPlayer}
         activeOpacity={0.5}
         onPress={handleOpenPlayingScreen}>
         <View style={styles.imageAndText}>
-          <Image source={{uri: imageUrl}} style={styles.coverImage} />
+          <Image
+            source={{uri: activeTrack?.artwork}}
+            style={styles.coverImage}
+          />
           <View style={[styles.textContainer]}>
             <MovingText
-              text="Monster go home Monster a a  aaa a "
+              text={activeTrack?.title!}
               style={styles.textTitle}
               animationThreshold={15}
             />
             {/* <Text style={styles.textTitle}>Monster go home</Text> */}
-            <Text style={styles.textArtist}>Alan Wright</Text>
+            <Text style={styles.textArtist}>{activeTrack?.artist}</Text>
           </View>
         </View>
         <View style={styles.actionContainer}>

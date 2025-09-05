@@ -1,17 +1,41 @@
-import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
+import TrackPlayer, {
+  Capability,
+  Event,
+  RatingType,
+  RepeatMode,
+} from 'react-native-track-player';
+
+// Flag to track if the player has been set up
+let isPlayerSetup = false;
 
 export async function setupPlayer() {
-  let isSetup = false;
   try {
-    await TrackPlayer.getCurrentTrack();
-    isSetup = true;
+    // Check if the player is already set up
+    if (isPlayerSetup) {
+      return true;
+    }
+
+    // Attempt to get the current track to see if the player is initialized
+    await TrackPlayer.getCurrentTrack(); // If it throws, setup the player
+    isPlayerSetup = true;
+    return true;
   } catch (e) {
-    await TrackPlayer.setupPlayer();
+    // If the player is not initialized, set it up
+    await TrackPlayer.setupPlayer({
+      maxCacheSize: 1024 * 100, // Set cache size if needed
+    });
     await TrackPlayer.updateOptions({
+      ratingType: RatingType.Heart,
       capabilities: [
         Capability.Play,
         Capability.Pause,
         Capability.Stop,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
+      ],
+      compactCapabilities: [
+        Capability.Play,
+        Capability.Pause,
         Capability.SkipToNext,
         Capability.SkipToPrevious,
       ],
@@ -22,23 +46,58 @@ export async function setupPlayer() {
         Capability.SkipToPrevious,
       ],
     });
-    isSetup = true;
-  } finally {
-    return isSetup;
+
+    isPlayerSetup = true;
+    return true;
   }
 }
-export async function addTrack(Songs) {
-  await TrackPlayer.add(Songs);
-  await TrackPlayer.setRepeatMode(RepeatMode.Queue); // for play again and again repeat mode
-}
-export async function playbackService() {
-  TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
 
-  TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
-  TrackPlayer.addEventListener(Event.RemoteNext, () =>
-    TrackPlayer.skipToNext(),
-  );
-  TrackPlayer.addEventListener(Event.RemotePrevious, () =>
-    TrackPlayer.skipToPrevious(),
-  );
+export async function addTrack(Songs) {
+  try {
+    // Add new songs to the player queue
+    await TrackPlayer.add(Songs);
+    await TrackPlayer.setRepeatMode(RepeatMode.Queue); // Set repeat mode for continuous play
+    console.log('Tracks added and repeat mode set.');
+  } catch (error) {
+    console.log('Error adding track to player:', error);
+  }
+}
+
+export async function playbackService() {
+  // Listen for events from external controls (like lock screen or notification center)
+  TrackPlayer.addEventListener(Event.RemotePlay, async () => {
+    try {
+      await TrackPlayer.play();
+      console.log('Playback started');
+    } catch (error) {
+      console.log('Error playing track:', error);
+    }
+  });
+
+  TrackPlayer.addEventListener(Event.RemotePause, async () => {
+    try {
+      await TrackPlayer.pause();
+      console.log('Playback paused');
+    } catch (error) {
+      console.log('Error pausing track:', error);
+    }
+  });
+
+  TrackPlayer.addEventListener(Event.RemoteNext, async () => {
+    try {
+      await TrackPlayer.skipToNext();
+      console.log('Skipped to next track');
+    } catch (error) {
+      console.log('Error skipping to next track:', error);
+    }
+  });
+
+  TrackPlayer.addEventListener(Event.RemotePrevious, async () => {
+    try {
+      await TrackPlayer.skipToPrevious();
+      console.log('Skipped to previous track');
+    } catch (error) {
+      console.log('Error skipping to previous track:', error);
+    }
+  });
 }
