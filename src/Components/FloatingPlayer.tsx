@@ -122,17 +122,17 @@ const FloatingPlayer = () => {
         </View>
         <View style={styles.actionContainer}>
           <PreviousButton
-            size={spacing.lg}
+            size={spacing.xl}
             onPress={() => skipToPrevious()}
             name="skip-previous"
           />
           <PlayPauseButton
-            size={spacing.lg}
+            size={spacing.xl}
             onPress={() => togglePlayBack(state)}
             name={state === State.Playing ? 'pause' : 'play'}
           />
           <NextButton
-            size={spacing.lg}
+            size={spacing.xl}
             onPress={() => skipToNext()}
             name="skip-next"
           />

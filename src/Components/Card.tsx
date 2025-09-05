@@ -10,14 +10,21 @@ const Card = ({item}: any) => {
   // Function to handle track play when the card is pressed
   const handlePlayTrack = async () => {
     try {
-      // Add the track to the player queue
+      const songs = await TrackPlayer.getQueue();
+
+      // Check if the song is already in the queue
+      const trackIndex = songs.findIndex((song: any) => song.id === item.id);
+
+      if (trackIndex !== -1) {
+        // If the track is already in the queue, start playing it
+        await TrackPlayer.skip(trackIndex); // This will skip directly to the track in the queue
+        await TrackPlayer.play();
+        return;
+      }
+
+      // Add the track to the queue
       await TrackPlayer.add(item);
-
-      console.log('Track Added to Queue:', item?.title);
-
-      // Start playing the track
       await TrackPlayer.play();
-      console.log('Track Started Playing');
     } catch (error) {
       console.log('Error Playing Track:', error);
     }

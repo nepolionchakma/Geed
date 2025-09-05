@@ -1,23 +1,38 @@
-import {FlatList, StyleSheet} from 'react-native';
-import React from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {colors} from '../Constants/Colors';
-
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../Components/Header';
 import {fontFamilies} from '../Constants/Fonts';
 import {fontSizes, spacing} from '../Constants/dimensions';
-// import Card from '../Components/Card';
 import CardWithCategory from '../Components/CardWithCategory';
 import FloatingPlayer from '../Components/FloatingPlayer';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
-import {useActiveTrack} from 'react-native-track-player';
+import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
 
 function HomeScreen() {
+  // Get the current active track from TrackPlayer
   const activeTrack = useActiveTrack();
+
+  // Define a state to manage whether the floating player should show
+  const [isPlayingQueue, setIsPlayingQueue] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const songs = await TrackPlayer.getQueue();
+      console.log(songs, activeTrack, 'activeTrack--');
+      if (activeTrack && songs.length > 0) {
+        setIsPlayingQueue(true);
+      }
+      // if(songs.length > 0) {
+      // }
+    })();
+  }, [activeTrack]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-      {/* <CardWithCategory /> */}
+
+      {/* Render the list of songs */}
       <FlatList
         keyExtractor={(item, index) => (item.id + index).toString()}
         data={SongsWithCategory}
@@ -25,7 +40,9 @@ function HomeScreen() {
         contentContainerStyle={{gap: 22, paddingBottom: spacing.sm}}
         showsVerticalScrollIndicator={false}
       />
-      <FloatingPlayer />
+
+      {/* Conditionally render FloatingPlayer if there is an active track */}
+      {isPlayingQueue && <FloatingPlayer />}
     </SafeAreaView>
   );
 }
@@ -36,14 +53,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // paddingVertical: spacing.sm,
-    // paddingHorizontal: spacing.xs,
+    paddingBottom: spacing.sm, // Add padding at the bottom to prevent overlap
   },
-  txtHeader: {
-    fontSize: fontSizes.lg,
-    color: colors.textPrimary,
-    fontFamily: fontFamilies.light,
-  },
+  // floatingPlayerContainer: {
+  //   position: 'absolute',
+  //   bottom: 0,
+  //   left: 0,
+  //   right: 0,
+  //   paddingHorizontal: spacing.sm,
+  //   paddingVertical: spacing.sm,
+  //   backgroundColor: colors.background, // Optional: Background color for the floating player
+  //   borderTopLeftRadius: 10,
+  //   borderTopRightRadius: 10,
+  //   shadowColor: '#000',
+  //   shadowOffset: {width: 0, height: -2},
+  //   shadowOpacity: 0.25,
+  //   shadowRadius: 4,
+  //   elevation: 5, // Add some shadow/elevation for better floating effect on Android
+  // },
 });
