@@ -5629,11 +5629,6 @@ react-native-gesture-handler@^2.28.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
-react-native-get-music-files@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/react-native-get-music-files/-/react-native-get-music-files-2.2.4.tgz#6f35981892938e314507fc9f9553418e1980bcec"
-  integrity sha512-jHTOZ/yH+OIlYG0xG0eli7Ztw/KLbwBrX/oSviqEeSHIW983/CNorY2JcT64y7qZiXzJdYhehsAtZuPF6xw04A==
-
 react-native-is-edge-to-edge@1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.7.tgz#28947688f9fafd584e73a4f935ea9603bd9b1939"
