@@ -9,14 +9,8 @@ import CardWithCategory from '../Components/CardWithCategory';
 import FloatingPlayer from '../Components/FloatingPlayer';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
 import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
-// import MusicFiles from 'react-native-get-music-files';
 
-import {
-  getAll,
-  searchSongs,
-  SortSongFields,
-  SortSongOrder,
-} from 'react-native-get-music-files';
+import AudioModule from 'react-native-local-audio';
 import {requestPermissions} from '../Utils/FilePermission';
 
 function HomeScreen() {
@@ -40,13 +34,12 @@ function HomeScreen() {
   useEffect(() => {
     (async () => {
       await requestPermissions();
-      const songsOrError = await getAll({
+      const songsOrError = await AudioModule.getAllAudio({
+        sortBy: 'TITLE',
+        orderBy: 'ASC',
         limit: 20,
         offset: 0,
         coverQuality: 50,
-        minSongDuration: 1000, // Ensure valid duration is set
-        sortBy: SortSongFields.TITLE,
-        // sortOrder: SortSongOrder.DESC,
       });
       console.log(songsOrError, 'songsOrError');
       // error
@@ -55,35 +48,7 @@ function HomeScreen() {
         console.log(songsOrError, 'songsOrError');
         return;
       }
-
-      // const resultsOrError = await searchSongs({
-      //   limit: 10,
-      //   offset: 0,
-      //   coverQuality: 50,
-      //   searchBy: '...',
-      //   sortBy: SortSongFields.DURATION,
-      //   sortOrder: SortSongOrder.DESC,
-      // });
-
-      // // error
-      // if (typeof resultsOrError === 'string') {
-      //   // do something with the error
-      //   return;
-      // }
     })();
-
-    //   (async () => {
-    //     await requestPermissions();
-
-    //     const result = await MusicFiles.getAll();
-    //     console.log(result, 'result');
-    //     if (typeof result === 'string') {
-    //       console.error('Error fetching songs:', result);
-    //       setTracks([]);
-    //     } else {
-    //       // setTracks( );
-    //     }
-    //   })();
   }, []);
   return (
     <SafeAreaView style={styles.container}>
