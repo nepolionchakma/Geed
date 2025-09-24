@@ -1,9 +1,9 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { colors } from '../Constants/Colors';
-import { iconSizes, spacing } from '../Constants/dimensions';
-import { DrawerActions, useNavigation } from '@react-navigation/native';
+import {colors} from '../Constants/Colors';
+import {iconSizes, spacing} from '../Constants/dimensions';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
 
 const Header = () => {
   // const navigation = useNavigation<DrawerActionHelpers<DrawerParamList>>();

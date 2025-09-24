@@ -8,7 +8,7 @@ import {
 import {useEffect} from 'react';
 import {addTrack, setupPlayer} from './Services/PlaybackService';
 import {RecommendedSongs} from './Data/Songs';
-import {setIsReady, setSong} from './Redux/Slices/SongSlice';
+import {setIsReady, setSong, resetSong} from './Redux/Slices/SongSlice';
 import Drawer from './Navigations/Drawer';
 import {useAppDispatch} from './Redux/Hooks/Hooks';
 import TrackPlayer from 'react-native-track-player';
@@ -20,7 +20,7 @@ const MainApp = () => {
   useEffect(() => {
     const setup = async () => {
       try {
-        const isSetup = await setupPlayer(); // Ensure player is set up only once
+        const isSetup = await setupPlayer();
         if (isSetup) {
           await addTrack(RecommendedSongs);
           dispatch(setSong(RecommendedSongs));
@@ -35,7 +35,8 @@ const MainApp = () => {
     setup(); // Call setup once
 
     return () => {
-      TrackPlayer.stop(); // Clean up and stop player when the component unmounts
+      dispatch(resetSong()); // Reset song state when unmounted
+      TrackPlayer.stop();
       TrackPlayer.reset();
     };
   }, [dispatch]); // Only run once when component mounts
@@ -44,7 +45,7 @@ const MainApp = () => {
     <GestureHandlerRootView style={styles.GestureHandlerRootViewContainer}>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
         <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          barStyle={isDarkMode ? 'dark-content' : 'light-content'}
           translucent={Platform.OS === 'ios'}
         />
         <NavigationContainer>

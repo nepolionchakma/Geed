@@ -1818,6 +1818,14 @@
     invariant "^2.2.4"
     nullthrows "^1.1.1"
 
+"@react-navigation/bottom-tabs@^7.4.7":
+  version "7.4.7"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-7.4.7.tgz#c6fb80bfe25f47db27491918a764e01877f7efeb"
+  integrity sha512-SQ4KuYV9yr3SV/thefpLWhAD0CU2CrBMG1l0w/QKl3GYuGWdN5OQmdQdmaPZGtsjjVOb+N9Qo7Tf6210P4TlpA==
+  dependencies:
+    "@react-navigation/elements" "^2.6.4"
+    color "^4.2.3"
+
 "@react-navigation/core@^7.12.4":
   version "7.12.4"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-7.12.4.tgz#73cc4c0989455c93bf21d7aeecc89d3a7006ccde"
@@ -6149,7 +6157,7 @@ react-native-is-edge-to-edge@^1.2.1:
 
 "react-native-local-audio@https://github.com/nepolionchakma/react-native-local-audio.git":
   version "1.0.0"
-  resolved "https://github.com/nepolionchakma/react-native-local-audio.git#194bef98a6740875d6d8890cb68abbddb5430b3a"
+  resolved "https://github.com/nepolionchakma/react-native-local-audio.git#c491fc63c85b306e4f98b378703f97e30539ec86"
 
 react-native-reanimated@3.x:
   version "3.19.1"

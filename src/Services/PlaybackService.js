@@ -54,7 +54,14 @@ export async function setupPlayer() {
 
 export async function addTrack(Songs) {
   try {
-    // Add new songs to the player queue
+    // Check if the player is initialized first
+    const isSetup = await setupPlayer();
+    if (!isSetup) {
+      console.log('Player setup failed');
+      return;
+    }
+
+    // Add new songs to the player queue if player is setup
     await TrackPlayer.add(Songs);
     await TrackPlayer.setRepeatMode(RepeatMode.Queue); // Set repeat mode for continuous play
     console.log('Tracks added and repeat mode set.');

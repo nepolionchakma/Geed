@@ -1,70 +1,104 @@
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {colors} from '../Constants/Colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../Components/Header';
-// import {fontFamilies} from '../Constants/Fonts';
 import {spacing} from '../Constants/dimensions';
-import CardWithCategory from '../Components/CardWithCategory';
-import FloatingPlayer from '../Components/FloatingPlayer';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
 import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
 
-import AudioModule from 'react-native-local-audio';
-import {requestPermissions} from '../Utils/FilePermission';
+import {useAppDispatch, useAppSelector} from '../Redux/Hooks/Hooks';
+import {
+  setSelectedSongsCategory,
+  setSelectedSongsViaCategory,
+} from '../Redux/Slices/SelectedCategory';
+import {RootState} from '../Redux/Store/Store';
+import FloatingPlayer from '../Components/FloatingPlayer';
+import CategoryTabs from '../Components/CategoryTabs';
+import SongsCard from '../Components/SongsCard';
+import {addTrack, setupPlayer} from '../Services/PlaybackService';
 
 function HomeScreen() {
-  // Get the current active track from TrackPlayer
   const activeTrack = useActiveTrack();
-
-  // Define a state to manage whether the floating player should show
   const [isPlayingQueue, setIsPlayingQueue] = useState(false);
+  const dispatch = useAppDispatch();
+
+  // Accessing the selected category from Redux state
+  const selectedCategoryData = useAppSelector(
+    (state: RootState) => state.selectedSongsCategory,
+  );
+
+  const handleCategoryClick = (category: string) => {
+    dispatch(setSelectedSongsCategory(category));
+  };
+
+  // Check the queue for active tracks
   useEffect(() => {
-    (async () => {
-      const songs = await TrackPlayer.getQueue();
-      console.log(songs, activeTrack, 'activeTrack--');
-      if (activeTrack && songs.length > 0) {
-        setIsPlayingQueue(true);
+    const checkActiveTrack = async () => {
+      try {
+        // Ensure player setup completes first
+        await setupPlayer();
+
+        // Now that player is set up, get the queue and check active track
+        const songs = await TrackPlayer.getQueue();
+        if (activeTrack && songs.length > 0 && activeTrack.id !== songs[0].id) {
+          setIsPlayingQueue(true);
+        } else {
+          setIsPlayingQueue(false);
+        }
+      } catch (error) {
+        console.error('Error in setupPlayer or TrackPlayer:', error);
       }
-      // if(songs.length > 0) {
-      // }
-    })();
+    };
+
+    checkActiveTrack();
   }, [activeTrack]);
 
   useEffect(() => {
-    (async () => {
-      await requestPermissions();
-      const songsOrError = await AudioModule.getAllAudio({
-        sortBy: 'TITLE',
-        orderBy: 'ASC',
-        limit: 20,
-        offset: 0,
-        coverQuality: 50,
-      });
-      console.log(songsOrError, 'songsOrError');
-      // error
-      if (typeof songsOrError === 'string') {
-        // do something with the error
-        console.log(songsOrError, 'songsOrError');
-        return;
-      }
-    })();
-  }, []);
+    const filteredSongs = SongsWithCategory.find(
+      item => item.title === selectedCategoryData.selectedSongsCategory,
+    );
+
+    if (filteredSongs) {
+      // console.log(filteredSongs.songs, 'filteredSongs.songs');
+      dispatch(setSelectedSongsViaCategory(filteredSongs.songs));
+      addTrack(filteredSongs.songs);
+    } else {
+      console.log('No matching category found');
+    }
+  }, [dispatch, selectedCategoryData]);
+
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-
-      {/* Render the list of songs */}
-      <FlatList
-        keyExtractor={(item, index) => (item.id + index).toString()}
-        data={SongsWithCategory}
-        renderItem={CardWithCategory}
-        contentContainerStyle={{gap: 22, paddingBottom: spacing.sm}}
-        showsVerticalScrollIndicator={false}
+      <View>
+        <FlatList
+          keyExtractor={(item, index) => (item.id + index).toString()} // Use a unique identifier for the key
+          data={SongsWithCategory}
+          renderItem={params => (
+            <CategoryTabs
+              {...params}
+              selectedCategory={selectedCategoryData.selectedSongsCategory}
+              handleCategoryClick={handleCategoryClick}
+            />
+          )}
+          contentContainerStyle={styles.contentContainerStyle}
+          horizontal
+        />
+      </View>
+      <SongsCard
+        selectedSongsViaCategory={selectedCategoryData.selectedSongsViaCategory}
       />
-
-      {/* Conditionally render FloatingPlayer if there is an active track */}
-      {isPlayingQueue && <FloatingPlayer />}
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          marginBottom: 70,
+        }}>
+        {isPlayingQueue && <FloatingPlayer />}
+      </View>
     </SafeAreaView>
   );
 }
@@ -75,22 +109,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingBottom: spacing.sm, // Add padding at the bottom to prevent overlap
+    paddingBottom: spacing.sm,
   },
-  // floatingPlayerContainer: {
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   left: 0,
-  //   right: 0,
-  //   paddingHorizontal: spacing.sm,
-  //   paddingVertical: spacing.sm,
-  //   backgroundColor: colors.background, // Optional: Background color for the floating player
-  //   borderTopLeftRadius: 10,
-  //   borderTopRightRadius: 10,
-  //   shadowColor: '#000',
-  //   shadowOffset: {width: 0, height: -2},
-  //   shadowOpacity: 0.25,
-  //   shadowRadius: 4,
-  //   elevation: 5, // Add some shadow/elevation for better floating effect on Android
-  // },
+  contentContainerStyle: {
+    height: 30,
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: spacing.md,
+    overflow: 'hidden',
+  },
 });

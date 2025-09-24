@@ -7,7 +7,6 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 import SettingsScreen from '../Screens/SettingsScreen';
-import RootStack from './RootStack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AboutUsScreen from '../Screens/AboutUsScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
@@ -17,6 +16,8 @@ import LikedSongsScreen from '../Screens/LikedSongsScreen';
 import {iconSizes} from '../Constants/dimensions';
 import {colors} from '../Constants/Colors';
 import {Text} from 'react-native-gesture-handler';
+import BottomTabs from './BottomTabs';
+import RootStack from './RootStack';
 
 const {Navigator, Screen} = createDrawerNavigator<DrawerParamList>();
 const isDarkMode = true;

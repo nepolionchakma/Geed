@@ -1,6 +1,6 @@
-import { RecommendedSongs } from './Songs';
+import {RecommendedSongs} from './Songs';
 
-export const SongsWithCategory =  [
+export const SongsWithCategory = [
   {
     id: 1,
     title: 'Recommended Songs',
@@ -14,6 +14,16 @@ export const SongsWithCategory =  [
   {
     id: 3,
     title: 'NSC Mixes',
+    songs: RecommendedSongs,
+  },
+  {
+    id: 4,
+    title: 'A NSC Mixes',
+    songs: RecommendedSongs,
+  },
+  {
+    id: 5,
+    title: 'B NSC Mixes',
     songs: RecommendedSongs,
   },
 ];

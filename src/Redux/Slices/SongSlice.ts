@@ -1,26 +1,17 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {SongType} from '../../Types/SongsType';
 
 // Define Song type (ensure consistency with SongType in your types)
-interface Song {
-  id: number;
-  title: string;
-  artist: string;
-  artwork: string;
-  url: string;
+interface SongState {
+  songs: SongType[];
+  isPlaying: boolean;
+  progress: number;
+  isReady: boolean;
 }
 
 // Define initial state using Song type
-const initialState = {
-  songs: [
-    {
-      id: 1,
-      title: 'Song 1',
-      artist: 'Artist 1',
-      artwork:
-        'https://www.shutterstock.com/image-vector/retro-futuristic-background-1980s-style-600nw-487600702.jpg',
-      url: 'https://music.com.bd/download/Music/F/Fuad/BONNO/13%20-%20Fuad%20Ft.%20Upol%20-%20Tor%20Jonno%20Bonno%20(music.com.bd).mp3',
-    },
-  ],
+const initialState: SongState = {
+  songs: [],
   isPlaying: false,
   progress: 0,
   isReady: false,
@@ -31,9 +22,10 @@ export const songSlice = createSlice({
   name: 'track',
   initialState,
   reducers: {
-    setSong: (state, action: PayloadAction<Song[]>) => {
-      const newSongs = action.payload;
-      state.songs = newSongs;
+    setSong: (state, action: PayloadAction<SongType[]>) => {
+      if (state.songs !== action.payload) {
+        state.songs = action.payload;
+      }
     },
     setIsPlaying: (state, action: PayloadAction<boolean>) => {
       state.isPlaying = action.payload;
@@ -44,10 +36,13 @@ export const songSlice = createSlice({
     setIsReady: (state, action: PayloadAction<boolean>) => {
       state.isReady = action.payload;
     },
+    resetSong: state => {
+      state.songs = [];
+    },
   },
 });
 
-export const {setSong, setIsPlaying, setProgress, setIsReady} =
+export const {setSong, setIsPlaying, setProgress, setIsReady, resetSong} =
   songSlice.actions;
 
 export default songSlice.reducer;
