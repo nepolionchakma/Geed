@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "title": "All",
+    "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json"
+  },
+  {
+    "id": 2,
+    "title": "Chakma",
+    "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/chakma.json"
+  },
+  {
+    "id": 2,
+    "title": "Marma",
+    "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/marma.json"
+  }
+]
