@@ -72,6 +72,7 @@ function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <Header />
       <View>
+        {/* Top Categories Tabs Component */}
         <FlatList
           keyExtractor={(item, index) => (item.id + index).toString()} // Use a unique identifier for the key
           data={SongsWithCategory}
@@ -86,9 +87,11 @@ function HomeScreen() {
           horizontal
         />
       </View>
+      {/* Songs List Component */}
       <SongsCard
         selectedSongsViaCategory={selectedCategoryData.selectedSongsViaCategory}
       />
+      {/* Floating Player */}
       <View
         style={{
           position: 'absolute',

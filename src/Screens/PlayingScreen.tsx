@@ -112,7 +112,8 @@ const PlayingScreen = () => {
       <View style={styles.content}>
         <View style={styles.coverImageContainer}>
           <Image
-            source={{uri: activeTrack?.artwork?.toString()}}
+            source={require('../Assets/logo1.jpg')}
+            // source={{uri: activeTrack?.artwork?.toString()}}
             style={[styles.coverImage]}
           />
         </View>
@@ -279,8 +280,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   coverImage: {
-    width: 200,
-    height: 200,
+    width: 100,
+    // width: 200,
+    height: 100,
+    // height: 200,
     borderRadius: 10,
   },
   contentText: {

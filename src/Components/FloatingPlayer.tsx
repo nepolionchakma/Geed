@@ -107,7 +107,8 @@ const FloatingPlayer = () => {
         onPress={handleOpenPlayingScreen}>
         <View style={styles.imageAndText}>
           <Image
-            source={{uri: activeTrack?.artwork}}
+            // source={{uri: activeTrack?.artwork}}
+            source={require('../Assets/logo1.jpg')}
             style={styles.coverImage}
           />
           <View style={[styles.textContainer]}>
@@ -170,11 +171,11 @@ const styles = StyleSheet.create({
   textContainer: {
     width: '70%',
     paddingHorizontal: spacing.xs,
-    overflow: 'hidden',
+    // overflow: 'hidden',
   },
   coverImage: {
-    width: 70,
-    height: 70,
+    width: 30,
+    height: 30,
     borderRadius: 10,
   },
   textTitle: {

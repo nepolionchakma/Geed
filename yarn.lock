@@ -6155,9 +6155,10 @@ react-native-is-edge-to-edge@^1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
-"react-native-local-audio@https://github.com/nepolionchakma/react-native-local-audio.git":
+react-native-local-audio@^1.0.0:
   version "1.0.0"
-  resolved "https://github.com/nepolionchakma/react-native-local-audio.git#c491fc63c85b306e4f98b378703f97e30539ec86"
+  resolved "https://registry.yarnpkg.com/react-native-local-audio/-/react-native-local-audio-1.0.0.tgz#2260db6f6f0da15bb3f14f253f5e05ff34fc4ce3"
+  integrity sha512-hAsN1gdSq7qpFjGp1cSUVB4BNC8qZ4f9pwu3EQKslNb4rQKz+3qB5l9AfIhQVHbyFhs94vK4OfZSlAwqmuzCKA==
 
 react-native-reanimated@3.x:
   version "3.19.1"

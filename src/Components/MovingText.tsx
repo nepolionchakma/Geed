@@ -20,11 +20,14 @@ const MovingText = ({text, animationThreshold, style}: Props) => {
   const textWidth = text?.length * 3;
 
   useEffect(() => {
-    if (!shouldAnimate) return;
+    console.log(translateX, 'translateX');
+    if (!shouldAnimate) {
+      return;
+    }
     translateX.value = withDelay(
       1000,
       withRepeat(
-        withTiming(-textWidth, {
+        withTiming(-20, {
           duration: 5000,
           easing: Easing.linear,
         }),
@@ -42,7 +45,7 @@ const MovingText = ({text, animationThreshold, style}: Props) => {
   return (
     <Animated.Text
       numberOfLines={1}
-      style={[animatedStyle, style, shouldAnimate && {width: 9999}]}>
+      style={[animatedStyle, style, {width: 'auto', backgroundColor: 'red'}]}>
       {text}
     </Animated.Text>
   );

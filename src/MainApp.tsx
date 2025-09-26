@@ -21,8 +21,9 @@ const MainApp = () => {
     const setup = async () => {
       try {
         const isSetup = await setupPlayer();
+        console.log(isSetup, 'isSetup');
         if (isSetup) {
-          await addTrack(RecommendedSongs);
+          // await addTrack(RecommendedSongs);
           dispatch(setSong(RecommendedSongs));
           dispatch(setIsReady(isSetup));
           console.log('TrackPlayer is ready:', isSetup);

@@ -1,41 +1,55 @@
 import {PermissionsAndroid, Platform, Alert} from 'react-native';
 
-export async function requestPermissions() {
+export async function requestPermissions(): Promise<boolean> {
   try {
     if (Platform.OS === 'android') {
-      // For Android 13+ (API 33+), use READ_MEDIA_AUDIO
+      let granted: string;
+
       if (Platform.Version >= 33) {
-        const granted = await PermissionsAndroid.request(
+        // Android 13+ uses READ_MEDIA_AUDIO
+        granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
+          {
+            title: 'Audio Permission',
+            message:
+              'App needs access to your audio files to function properly.',
+            buttonPositive: 'OK',
+            buttonNegative: 'Cancel',
+          },
         );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.error('Permission denied for READ_MEDIA_AUDIO');
-          Alert.alert(
-            'Permission Denied',
-            'You need to grant audio permission to continue.',
-          );
-          return;
-        }
       } else {
-        // For Android versions below API 33, request READ_EXTERNAL_STORAGE
-        const granted = await PermissionsAndroid.request(
+        // Android < 13 uses READ_EXTERNAL_STORAGE
+        granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission',
+            message:
+              'App needs access to your audio files to function properly.',
+            buttonPositive: 'OK',
+            buttonNegative: 'Cancel',
+          },
         );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.error('Permission denied for READ_EXTERNAL_STORAGE');
-          Alert.alert(
-            'Permission Denied',
-            'You need to grant storage permission to continue.',
-          );
-          return;
-        }
       }
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      } else {
+        Alert.alert(
+          'Permission Denied',
+          'You need to grant permission to access audio files.',
+        );
+        return false;
+      }
+    } else {
+      // iOS permissions handled differently (not required for local audio access)
+      return true;
     }
   } catch (error) {
     console.error('Error requesting permissions:', error);
     Alert.alert(
       'Error',
-      'There was an error requesting the permissions. Please try again.',
+      'There was an error requesting permissions. Please try again.',
     );
+    return false;
   }
 }

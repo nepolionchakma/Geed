@@ -42,16 +42,20 @@ const SongsCard = ({selectedSongsViaCategory}: any) => {
         keyExtractor={(item, index) => `${item.id}-${item.title}-${index}`}
         data={selectedSongsViaCategory}
         renderItem={({item}) => {
-          console.log(`${item.artwork}`, 'artworkUri');
+          // console.log(`${item.artwork}`, 'artworkUri');
           return (
             <TouchableOpacity
               onPress={() => handlePlayTrack(item)}
               style={styles.songItem}>
               <Image
-                source={{
-                  uri: `${item.artwork} `,
+                source={
+                  require('../Assets/logo1.jpg')
+                  // { uri: `${item.artwork} `, }
+                }
+                style={{
+                  width: 30,
+                  height: 30,
                 }}
-                style={{width: 50, height: 50}}
               />
               <View style={{justifyContent: 'center'}}>
                 <Text style={styles.text}>{item.title}</Text>
@@ -77,6 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#21223dff',
     borderRadius: 10,
     marginBottom: 5,
+    alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,

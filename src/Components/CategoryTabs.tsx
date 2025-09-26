@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 interface Props {
   item: any;
@@ -22,4 +22,4 @@ const CategoryTabs = ({item, selectedCategory, handleCategoryClick}: Props) => {
 };
 export default CategoryTabs;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
