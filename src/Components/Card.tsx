@@ -5,7 +5,7 @@ import {fontSizes, spacing} from '../Constants/dimensions';
 import TrackPlayer from 'react-native-track-player';
 
 const Card = ({item}: any) => {
-  console.log('Card Item:', item);
+  // console.log('Card Item:', item);
 
   // Function to handle track play when the card is pressed
   const handlePlayTrack = async () => {

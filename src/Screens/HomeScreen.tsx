@@ -1,11 +1,8 @@
 import {FlatList, StyleSheet, View} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {colors} from '../Constants/Colors';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, {useEffect} from 'react';
 import Header from '../Components/Header';
 import {spacing} from '../Constants/dimensions';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
-import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
 
 import {useAppDispatch, useAppSelector} from '../Redux/Hooks/Hooks';
 import {
@@ -13,46 +10,25 @@ import {
   setSelectedSongsViaCategory,
 } from '../Redux/Slices/SelectedCategory';
 import {RootState} from '../Redux/Store/Store';
-import FloatingPlayer from '../Components/FloatingPlayer';
 import CategoryTabs from '../Components/CategoryTabs';
 import SongsCard from '../Components/SongsCard';
-import {addTrack, setupPlayer} from '../Services/PlaybackService';
+import {addTrack} from '../Services/PlaybackService';
+import Container from '../Components/Container';
+import FloatingPlayer from '../Components/FloatingPlayer';
 
 function HomeScreen() {
-  const activeTrack = useActiveTrack();
-  const [isPlayingQueue, setIsPlayingQueue] = useState(false);
   const dispatch = useAppDispatch();
 
   // Accessing the selected category from Redux state
   const selectedCategoryData = useAppSelector(
     (state: RootState) => state.selectedSongsCategory,
   );
-
+  const isPlayingQueue = useAppSelector(
+    (state: RootState) => state.tracks.isPlayingQueue,
+  );
   const handleCategoryClick = (category: string) => {
     dispatch(setSelectedSongsCategory(category));
   };
-
-  // Check the queue for active tracks
-  useEffect(() => {
-    const checkActiveTrack = async () => {
-      try {
-        // Ensure player setup completes first
-        await setupPlayer();
-
-        // Now that player is set up, get the queue and check active track
-        const songs = await TrackPlayer.getQueue();
-        if (activeTrack && songs.length > 0 && activeTrack.id !== songs[0].id) {
-          setIsPlayingQueue(true);
-        } else {
-          setIsPlayingQueue(false);
-        }
-      } catch (error) {
-        console.error('Error in setupPlayer or TrackPlayer:', error);
-      }
-    };
-
-    checkActiveTrack();
-  }, [activeTrack]);
 
   useEffect(() => {
     const filteredSongs = SongsWithCategory.find(
@@ -67,14 +43,19 @@ function HomeScreen() {
       console.log('No matching category found');
     }
   }, [dispatch, selectedCategoryData]);
-
+  // console.log(isPlayingQueue, 'isPlayingQueue');
   return (
-    <SafeAreaView style={styles.container}>
-      <Header />
+    <Container
+      isRefresh={true}
+      isScrollView={false}
+      style={styles.container}
+      header={<Header />}
+      footer={isPlayingQueue && <FloatingPlayer />}>
       <View>
         {/* Top Categories Tabs Component */}
         <FlatList
           keyExtractor={(item, index) => (item.id + index).toString()} // Use a unique identifier for the key
+          showsHorizontalScrollIndicator={false}
           data={SongsWithCategory}
           renderItem={params => (
             <CategoryTabs
@@ -91,18 +72,7 @@ function HomeScreen() {
       <SongsCard
         selectedSongsViaCategory={selectedCategoryData.selectedSongsViaCategory}
       />
-      {/* Floating Player */}
-      <View
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          marginBottom: 70,
-        }}>
-        {isPlayingQueue && <FloatingPlayer />}
-      </View>
-    </SafeAreaView>
+    </Container>
   );
 }
 
@@ -111,8 +81,8 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
-    paddingBottom: spacing.sm,
+    // backgroundColor: colors.background,
+    // paddingBottom: spacing.sm,
   },
   contentContainerStyle: {
     height: 30,
@@ -120,5 +90,6 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: spacing.md,
     overflow: 'hidden',
+    marginTop: spacing.xs,
   },
 });

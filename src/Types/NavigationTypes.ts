@@ -6,6 +6,7 @@ export type RootStackParamList = {
 export type DrawerParamList = {
   HomeScreen: undefined;
   Home: undefined;
+  PlayingScreen: undefined;
   Profile: undefined;
   Liked_Songs: undefined;
   FAQs: undefined;

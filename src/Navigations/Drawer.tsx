@@ -1,4 +1,4 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, useColorScheme} from 'react-native';
 import React from 'react';
 import {
   createDrawerNavigator,
@@ -16,12 +16,12 @@ import LikedSongsScreen from '../Screens/LikedSongsScreen';
 import {iconSizes} from '../Constants/dimensions';
 import {colors} from '../Constants/Colors';
 import {Text} from 'react-native-gesture-handler';
-import BottomTabs from './BottomTabs';
 import RootStack from './RootStack';
+import PlayingScreen from '../Screens/PlayingScreen';
 
 const {Navigator, Screen} = createDrawerNavigator<DrawerParamList>();
-const isDarkMode = true;
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <DrawerContentScrollView {...props}>
       <TouchableOpacity onPress={() => {}} style={styles.mode}>
@@ -36,6 +36,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   );
 };
 const Drawer = () => {
+  const isDarkMode = useColorScheme() === 'dark';
   return (
     <Navigator
       initialRouteName="Home"
@@ -49,31 +50,52 @@ const Drawer = () => {
         drawerInactiveTintColor: 'black',
         drawerType: 'slide',
         drawerStyle: {
-          backgroundColor: isDarkMode ? colors.background : '#fff',
+          backgroundColor: colors.background,
           // width: 240,
         },
+        // drawerContentStyle: {backgroundColor: colors.background},
       }}>
       <Screen
         name="Home"
         component={RootStack}
         options={{
-          drawerIcon: ({color, size}) => (
+          drawerIcon: ({size}) => (
             <Icon
               name="home"
               size={size}
               color={isDarkMode ? 'white' : 'green'}
             />
           ),
-          drawerLabel: ({color}) => (
+          drawerLabel: () => (
             <Text style={{color: isDarkMode ? 'white' : 'green'}}>Home</Text>
           ),
+          // sceneStyle: {backgroundColor: isDarkMode ? 'black' : 'white'},
+        }}
+      />
+      <Screen
+        name="PlayingScreen"
+        component={PlayingScreen}
+        options={{
+          drawerIcon: ({size}) => (
+            <Icon
+              name="music-note"
+              size={size}
+              color={isDarkMode ? 'white' : 'green'}
+            />
+          ),
+          drawerLabel: () => (
+            <Text style={{color: isDarkMode ? 'white' : 'green'}}>
+              Playing Now
+            </Text>
+          ),
+          // sceneStyle: {backgroundColor: isDarkMode ? 'black' : 'white'},
         }}
       />
       <Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          drawerIcon: ({color, size}) => (
+          drawerIcon: ({size}) => (
             <Icon
               name="person"
               size={size}
@@ -89,7 +111,7 @@ const Drawer = () => {
         name="Liked_Songs"
         component={LikedSongsScreen}
         options={{
-          drawerIcon: ({color, size}) => (
+          drawerIcon: ({size}) => (
             <Icon
               name="favorite"
               size={size}
@@ -107,7 +129,7 @@ const Drawer = () => {
         name="FAQs"
         component={FAQsScreen}
         options={{
-          drawerIcon: ({color, size}) => (
+          drawerIcon: ({size}) => (
             <Icon
               name="help"
               size={size}
@@ -123,7 +145,7 @@ const Drawer = () => {
         name="Settings"
         component={SettingsScreen}
         options={{
-          drawerIcon: ({color, size}) => (
+          drawerIcon: ({size}) => (
             <Icon
               name="settings"
               size={size}
@@ -141,7 +163,7 @@ const Drawer = () => {
         name="About_Us"
         component={AboutUsScreen}
         options={{
-          drawerIcon: ({color, size}) => (
+          drawerIcon: ({size}) => (
             <Icon
               name="info"
               size={size}

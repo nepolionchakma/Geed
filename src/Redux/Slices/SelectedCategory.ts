@@ -18,13 +18,13 @@ export const selectedSongsCategory = createSlice({
   initialState,
   reducers: {
     setSelectedSongsCategory: (state, action: PayloadAction<string>) => {
-      console.log(action, 'setSelectedSongsCategory action');
+      // console.log(action, 'setSelectedSongsCategory action');
       if (state.selectedSongsCategory !== action.payload) {
         state.selectedSongsCategory = action.payload;
       }
     },
     setSelectedSongsViaCategory: (state, action: PayloadAction<SongType[]>) => {
-      console.log(action.payload, 'setSelectedSongsViaCategory action.payload');
+      // console.log(action.payload, 'setSelectedSongsViaCategory action.payload');
       state.selectedSongsViaCategory = action.payload;
     },
   },

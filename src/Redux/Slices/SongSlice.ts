@@ -7,6 +7,7 @@ interface SongState {
   isPlaying: boolean;
   progress: number;
   isReady: boolean;
+  isPlayingQueue: boolean;
 }
 
 // Define initial state using Song type
@@ -15,6 +16,7 @@ const initialState: SongState = {
   isPlaying: false,
   progress: 0,
   isReady: false,
+  isPlayingQueue: false,
 };
 
 // Create slice with typed actions and reducers
@@ -36,13 +38,22 @@ export const songSlice = createSlice({
     setIsReady: (state, action: PayloadAction<boolean>) => {
       state.isReady = action.payload;
     },
+    setIsPlayingQueue: (state, action: PayloadAction<boolean>) => {
+      state.isPlayingQueue = action.payload;
+    },
     resetSong: state => {
       state.songs = [];
     },
   },
 });
 
-export const {setSong, setIsPlaying, setProgress, setIsReady, resetSong} =
-  songSlice.actions;
+export const {
+  setSong,
+  setIsPlaying,
+  setProgress,
+  setIsReady,
+  setIsPlayingQueue,
+  resetSong,
+} = songSlice.actions;
 
 export default songSlice.reducer;

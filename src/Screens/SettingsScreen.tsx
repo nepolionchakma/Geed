@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import React from 'react';
 import Header from '../Components/Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../Constants/Colors';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {colors} from '../Constants/Colors';
 
 const SettingsScreen = () => {
   return (

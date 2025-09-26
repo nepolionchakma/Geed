@@ -13,7 +13,7 @@ const BottomTabs = () => {
       screenOptions={{
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: colors.background, // You can customize this if needed
+          backgroundColor: colors.bottomTab, // You can customize this if needed
           borderTopWidth: 0, // To hide the border at the top of the tab bar
         },
         tabBarLabelStyle: {display: 'none'}, // Hide the label if you don't want to show text

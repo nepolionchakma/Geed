@@ -8,6 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import React, {useEffect} from 'react';
+import {StyleSheet} from 'react-native';
 
 interface Props {
   text: string;
@@ -20,7 +21,7 @@ const MovingText = ({text, animationThreshold, style}: Props) => {
   const textWidth = text?.length * 3;
 
   useEffect(() => {
-    console.log(translateX, 'translateX');
+    // console.log(translateX, 'translateX');
     if (!shouldAnimate) {
       return;
     }
@@ -45,7 +46,7 @@ const MovingText = ({text, animationThreshold, style}: Props) => {
   return (
     <Animated.Text
       numberOfLines={1}
-      style={[animatedStyle, style, {width: 'auto', backgroundColor: 'red'}]}>
+      style={[animatedStyle, style, styles.text]}>
       {text}
     </Animated.Text>
   );
@@ -53,4 +54,6 @@ const MovingText = ({text, animationThreshold, style}: Props) => {
 
 export default MovingText;
 
-// const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  text: {width: 'auto'},
+});

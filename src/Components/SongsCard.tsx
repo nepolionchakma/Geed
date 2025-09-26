@@ -4,16 +4,19 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
 import React from 'react';
 import {spacing} from '../Constants/dimensions';
 import TrackPlayer from 'react-native-track-player';
 import {SongType} from '../Types/SongsType';
+import {colors} from '../Constants/Colors';
 // interface SongType {
 //   selectedSongsViaCategory: SongType[];
 // }
 const SongsCard = ({selectedSongsViaCategory}: any) => {
+  const isDark = useColorScheme() === 'dark';
   const handlePlayTrack = async (item: SongType) => {
     try {
       const songs = await TrackPlayer.getQueue();
@@ -37,7 +40,7 @@ const SongsCard = ({selectedSongsViaCategory}: any) => {
   };
 
   return (
-    <View style={{flex: 1, padding: spacing.md}}>
+    <View style={styles.container}>
       <FlatList
         keyExtractor={(item, index) => `${item.id}-${item.title}-${index}`}
         data={selectedSongsViaCategory}
@@ -46,18 +49,22 @@ const SongsCard = ({selectedSongsViaCategory}: any) => {
           return (
             <TouchableOpacity
               onPress={() => handlePlayTrack(item)}
-              style={styles.songItem}>
+              style={[
+                styles.songItem,
+                {
+                  backgroundColor: isDark
+                    ? colors.bottomTab
+                    : colors.floatingBG,
+                },
+              ]}>
               <Image
                 source={
                   require('../Assets/logo1.jpg')
                   // { uri: `${item.artwork} `, }
                 }
-                style={{
-                  width: 30,
-                  height: 30,
-                }}
+                style={styles.image}
               />
-              <View style={{justifyContent: 'center'}}>
+              <View style={styles.textContainer}>
                 <Text style={styles.text}>{item.title}</Text>
                 <View>
                   <Text style={styles.text}>{item.artist}</Text>
@@ -74,11 +81,11 @@ const SongsCard = ({selectedSongsViaCategory}: any) => {
 export default SongsCard;
 
 const styles = StyleSheet.create({
+  container: {flex: 1, padding: spacing.md},
   songItem: {
     flexDirection: 'row',
     gap: 10,
     padding: 10,
-    backgroundColor: '#21223dff',
     borderRadius: 10,
     marginBottom: 5,
     alignItems: 'center',
@@ -88,9 +95,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textContainer: {justifyContent: 'center'},
   text: {
     // fontSize: 20,
     // fontWeight: 'bold',
     color: 'white',
+  },
+  image: {
+    width: 30,
+    height: 30,
   },
 });

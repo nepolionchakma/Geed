@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../Constants/Colors';
 import {fontSizes, iconSizes, spacing} from '../Constants/dimensions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,6 +26,9 @@ import TrackPlayer, {
   usePlaybackState,
   useProgress,
 } from 'react-native-track-player';
+import Container from '../Components/Container';
+import {useAppDispatch} from '../Redux/Hooks/Hooks';
+import {setIsPlayingQueue} from '../Redux/Slices/SongSlice';
 
 export interface SongInfoProps {
   track: Track | null | undefined;
@@ -42,7 +44,7 @@ const PlayingScreen = () => {
   const progress = useSharedValue(0);
   const min = useSharedValue(0);
   const max = useSharedValue(0);
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     max.value = duration;
   }, [duration, max]);
@@ -59,9 +61,13 @@ const PlayingScreen = () => {
 
   const skipToNext = async () => {
     await TrackPlayer.skipToNext();
+    await TrackPlayer.play();
+    dispatch(setIsPlayingQueue(true));
   };
   const skipToPrevious = async () => {
     await TrackPlayer.skipToPrevious();
+    await TrackPlayer.play();
+    dispatch(setIsPlayingQueue(true));
   };
   const togglePlayBack = async (playback: State | undefined) => {
     // Ensure that the playback state is valid before proceeding
@@ -74,8 +80,10 @@ const PlayingScreen = () => {
     if (currentTrack !== null) {
       if (playback === State.Paused || playback === State.Ready) {
         await TrackPlayer.play();
+        dispatch(setIsPlayingQueue(true));
       } else {
         await TrackPlayer.pause();
+        dispatch(setIsPlayingQueue(true));
       }
     }
   };
@@ -98,7 +106,7 @@ const PlayingScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Container isRefresh={true} isScrollView={false} style={styles.container}>
       <View style={styles.headerIcons}>
         <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
           <Icon
@@ -208,7 +216,7 @@ const PlayingScreen = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </Container>
   );
 };
 
@@ -217,7 +225,7 @@ export default PlayingScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    // backgroundColor: colors.background,
     paddingVertical: spacing.sm,
   },
   headerIcons: {
@@ -311,5 +319,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.background,
   },
 });

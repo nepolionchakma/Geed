@@ -1,5 +1,8 @@
 export const colors = {
   background: '#091227',
+  bottomTab: '#112248ff',
+  white: '#fff',
+  floatingBG: '#213561ff',
   textPrimary: '#EAF0FF',
   textSecondary: '#A5C0FF',
   iconPrimary: '#EAF0FF',

@@ -15,7 +15,7 @@ import {useSharedValue} from 'react-native-reanimated';
 import MovingText from './MovingText';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../Types/NavigationTypes';
+import {DrawerParamList} from '../Types/NavigationTypes';
 import TrackPlayer, {
   PlaybackState,
   State,
@@ -23,15 +23,13 @@ import TrackPlayer, {
   usePlaybackState,
   useProgress,
 } from 'react-native-track-player';
-// import {addTrack, setupPlayer} from '../Services/PlaybackService';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {RootState} from '../Redux/Store/Store';
 import {useAppSelector} from '../Redux/Hooks/Hooks';
 
 const FloatingPlayer = () => {
   const activeTrack = useActiveTrack();
   const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    useNavigation<NativeStackNavigationProp<DrawerParamList>>();
   const {position, duration} = useProgress();
   // console.log(position, 'position');
   const progress = useSharedValue(0);
@@ -81,12 +79,12 @@ const FloatingPlayer = () => {
   };
   if (!data.isReady) {
     return (
-      <SafeAreaView>
+      <View style={{backgroundColor: colors.background}}>
         <ActivityIndicator size="large" color={colors.iconPrimary} />
-      </SafeAreaView>
+      </View>
     );
   }
-  console.log(activeTrack, 'activeTrack');
+  // console.log(activeTrack, 'activeTrack');
   return (
     <View style={styles.container}>
       <Slider
@@ -118,7 +116,11 @@ const FloatingPlayer = () => {
               animationThreshold={15}
             />
             {/* <Text style={styles.textTitle}>Monster go home</Text> */}
-            <Text style={styles.textArtist}>{activeTrack?.artist}</Text>
+            <Text style={styles.textArtist}>
+              {activeTrack?.artist?.length && activeTrack?.artist?.length > 15
+                ? activeTrack?.artist?.slice(0, 22) + '...'
+                : activeTrack?.artist}
+            </Text>
           </View>
         </View>
         <View style={styles.actionContainer}>
@@ -147,8 +149,13 @@ export default FloatingPlayer;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#192e46ff',
+    backgroundColor: colors.floatingBG,
     paddingVertical: spacing.xs,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    marginBottom: 73,
   },
   slider: {
     zIndex: 1,
@@ -158,20 +165,20 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.xs,
+    paddingHorizontal: spacing.lg,
     justifyContent: 'space-between',
   },
   imageAndText: {
     flex: 1,
-    gap: 8,
+    gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
     // paddingTop: spacing.xs,
   },
   textContainer: {
-    width: '70%',
+    width: '85%',
     paddingHorizontal: spacing.xs,
-    // overflow: 'hidden',
+    overflow: 'hidden',
   },
   coverImage: {
     width: 30,
@@ -185,7 +192,7 @@ const styles = StyleSheet.create({
   },
   textArtist: {
     color: colors.textSecondary,
-    fontSize: fontSizes.sm,
+    fontSize: fontSizes.md,
   },
   actionContainer: {
     flexDirection: 'row',

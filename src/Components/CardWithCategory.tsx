@@ -6,7 +6,7 @@ import {fontFamilies} from '../Constants/Fonts';
 import Card from './Card';
 
 const CardWithCategory = ({item}: any) => {
-  console.log(item, 'item');
+  // console.log(item, 'item');
   return (
     <View style={styles.container}>
       <Text style={styles.txtHeader}>{item.title}</Text>
