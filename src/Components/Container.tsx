@@ -173,16 +173,16 @@ const Container: React.FC<ContainerNewProps> = ({
           enableAutomaticScroll
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          //@ts-ignore
+          {...rest}
           refreshControl={
-            isRefresh && (
+            isRefresh ? (
               <RefreshControl
                 refreshing={refreshing}
                 onRefresh={onRefresh}
                 tintColor={colors.textPrimary}
                 colors={[colors.textPrimary, colors.textSecondary]}
               />
-            )
+            ) : undefined
           }
           style={styles.keyboard}>
           {children}
@@ -192,16 +192,15 @@ const Container: React.FC<ContainerNewProps> = ({
         <Fragment>
           {isScrollView ? (
             <ScrollView
-              //@ts-ignore
               refreshControl={
-                isRefresh && (
+                isRefresh ? (
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     tintColor={colors.textPrimary}
                     colors={[colors.textPrimary, colors.textSecondary]}
                   />
-                )
+                ) : undefined
               }
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}

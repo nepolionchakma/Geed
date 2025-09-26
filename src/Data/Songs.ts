@@ -23,4 +23,12 @@ export const RecommendedSongs = [
       'https://d2n9ha3hrkss16.cloudfront.net/uploads/stage/stage_image/21198/optimized_large_thumb_stage.jpg',
     url: 'https://music.com.bd/download/Music/F/Fuad/BONNO/10%20-%20Shanto,%20Johan%20and%20Fuad%20-%20Nitol%20Paye%20[LIVE]%20(music.com.bd).mp3',
   },
+  {
+    id: 4,
+    title: 'Aagazor lokkho tara',
+    artist: 'Koyal Chakma',
+    artwork:
+      'https://d2n9ha3hrkss16.cloudfront.net/uploads/stage/stage_image/21198/optimized_large_thumb_stage.jpg',
+    url: 'https://drive.google.com/uc?export=download&id=1BQ394i6VY5JjOfqSQtXII3e51lnHftKS',
+  },
 ];
