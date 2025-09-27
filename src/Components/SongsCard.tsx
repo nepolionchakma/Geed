@@ -12,11 +12,14 @@ import {spacing} from '../Constants/dimensions';
 import TrackPlayer from 'react-native-track-player';
 import {SongType} from '../Types/SongsType';
 import {colors} from '../Constants/Colors';
+import {setIsPlayingQueue} from '../Redux/Slices/SongSlice';
+import {useAppDispatch} from '../Redux/Hooks/Hooks';
 // interface SongType {
 //   selectedSongsViaCategory: SongType[];
 // }
 const SongsCard = ({selectedSongsViaCategory}: any) => {
   const isDark = useColorScheme() === 'dark';
+  const dispatch = useAppDispatch();
   const handlePlayTrack = async (item: SongType) => {
     try {
       const songs = await TrackPlayer.getQueue();
@@ -28,12 +31,14 @@ const SongsCard = ({selectedSongsViaCategory}: any) => {
         // If the track is already in the queue, start playing it
         await TrackPlayer.skip(trackIndex); // This will skip directly to the track in the queue
         await TrackPlayer.play();
+        dispatch(setIsPlayingQueue(true));
         return;
       }
 
       // Add the track to the queue
       await TrackPlayer.add(item);
       await TrackPlayer.play();
+      dispatch(setIsPlayingQueue(true));
     } catch (error) {
       console.log('Error Playing Track:', error);
     }

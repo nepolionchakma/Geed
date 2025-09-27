@@ -117,7 +117,7 @@ const Container: React.FC<ContainerNewProps> = ({
         if (activeTrack && songs.length > 0 && activeTrack.id !== songs[0].id) {
           dispatch(setIsPlayingQueue(true));
         } else {
-          dispatch(setIsPlayingQueue(false));
+          // dispatch(setIsPlayingQueue(false));
         }
       } catch (error) {
         console.error('Error in setupPlayer or TrackPlayer:', error);

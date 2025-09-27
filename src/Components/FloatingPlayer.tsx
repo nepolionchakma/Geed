@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -12,7 +13,7 @@ import {fontSizes, spacing} from '../Constants/dimensions';
 import {NextButton, PlayPauseButton, PreviousButton} from './PlayerColtroller';
 import {Slider} from 'react-native-awesome-slider';
 import {useSharedValue} from 'react-native-reanimated';
-import MovingText from './MovingText';
+// import MovingText from './MovingText';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {DrawerParamList} from '../Types/NavigationTypes';
@@ -25,6 +26,7 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import {RootState} from '../Redux/Store/Store';
 import {useAppSelector} from '../Redux/Hooks/Hooks';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const FloatingPlayer = () => {
   const activeTrack = useActiveTrack();
@@ -77,6 +79,27 @@ const FloatingPlayer = () => {
       }
     }
   };
+
+  const netInfo = useNetInfo();
+  console.log(netInfo, 'netInfo');
+  useEffect(() => {
+    if (netInfo?.isConnected === false) {
+      return Alert.alert(
+        'No Internet',
+        'Please check your internet connection',
+        [
+          // {
+          //   text: 'Cancel',
+          //   onPress: () => console.log('Cancel Pressed'),
+          //   style: 'cancel',
+          // },
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+    }
+  }, [netInfo?.isConnected]);
+
   if (!data.isReady) {
     return (
       <View style={{backgroundColor: colors.background}}>
@@ -110,12 +133,17 @@ const FloatingPlayer = () => {
             style={styles.coverImage}
           />
           <View style={[styles.textContainer]}>
-            <MovingText
+            {/* <MovingText
               text={activeTrack?.title!}
               style={styles.textTitle}
               animationThreshold={15}
-            />
+            /> */}
             {/* <Text style={styles.textTitle}>Monster go home</Text> */}
+            <Text style={styles.textTitle}>
+              {activeTrack?.title?.length && activeTrack?.title?.length > 15
+                ? activeTrack?.title?.slice(0, 22) + '...'
+                : activeTrack?.title}
+            </Text>
             <Text style={styles.textArtist}>
               {activeTrack?.artist?.length && activeTrack?.artist?.length > 15
                 ? activeTrack?.artist?.slice(0, 22) + '...'
@@ -151,11 +179,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.floatingBG,
     paddingVertical: spacing.xs,
-    position: 'absolute',
+    // position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0,
-    marginBottom: 73,
+    bottom: 49,
+    // marginBottom: 73,
+    zIndex: 11,
   },
   slider: {
     zIndex: 1,
@@ -165,18 +194,18 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     justifyContent: 'space-between',
   },
   imageAndText: {
     flex: 1,
-    gap: 10,
+    gap: 5,
     flexDirection: 'row',
     alignItems: 'center',
     // paddingTop: spacing.xs,
   },
   textContainer: {
-    width: '85%',
+    width: '90%',
     paddingHorizontal: spacing.xs,
     overflow: 'hidden',
   },
