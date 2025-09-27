@@ -1,5 +1,5 @@
 import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Header from '../Components/Header';
 import {spacing} from '../Constants/dimensions';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
@@ -17,13 +17,17 @@ import Container from '../Components/Container';
 import FloatingPlayer from '../Components/FloatingPlayer';
 import {PlaybackState, usePlaybackState} from 'react-native-track-player';
 import {colors} from '../Constants/Colors';
+import axios from 'axios';
+import {SongsWithCategoryType} from '../Types/SongsType';
 
 function HomeScreen() {
   const dispatch = useAppDispatch();
   const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
   const stateSong = 'state' in playBackState ? playBackState.state : undefined;
   const [isLoading, setIsLoading] = useState(false);
-
+  const [onlineDataCategories, setOnlineDataCategories] = useState<
+    SongsWithCategoryType[] | null
+  >(null);
   // Accessing the selected category from Redux state
   const selectedCategoryData = useAppSelector(
     (state: RootState) => state.selectedSongsCategory,
@@ -36,10 +40,52 @@ function HomeScreen() {
   };
 
   useEffect(() => {
-    const filteredSongs = SongsWithCategory.find(
-      item => item.title === selectedCategoryData.selectedSongsCategory,
-    );
+    (async () => {
+      try {
+        const fetchingURL =
+          'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/categories.json';
+        const onlineData = await axios.get(fetchingURL);
+        setOnlineDataCategories(onlineData.data);
+      } catch (error) {
+        console.log(error, 'error');
+      }
+    })();
+  }, []);
 
+  const selectedCategorySongs = useMemo(
+    () => () => {
+      switch (selectedCategoryData.selectedSongsCategory) {
+        case 'Chakma':
+          return 'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/chakma.json';
+        case 'Marma':
+          return 'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/marma.json';
+
+        default:
+          return 'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json';
+      }
+    },
+    [selectedCategoryData.selectedSongsCategory],
+  );
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchingURL = await selectedCategorySongs();
+        const onlineData = await axios.get(fetchingURL);
+        console.log(onlineData, 'onlineData');
+      } catch (error) {
+        console.log(error, 'error');
+      }
+    })();
+  }, [selectedCategoryData.selectedSongsCategory, selectedCategorySongs]);
+
+  useEffect(() => {
+    if (!onlineDataCategories) {
+      return;
+    }
+    const filteredSongs = onlineDataCategories.find(
+      item => item.category_name === selectedCategoryData.selectedSongsCategory,
+    );
+    console.log(filteredSongs, 'filteredSongs', onlineDataCategories);
     if (filteredSongs) {
       // console.log(filteredSongs.songs, 'filteredSongs.songs');
       dispatch(setSelectedSongsViaCategory(filteredSongs.songs));
@@ -47,7 +93,7 @@ function HomeScreen() {
     } else {
       console.log('No matching category found');
     }
-  }, [dispatch, selectedCategoryData]);
+  }, [dispatch, onlineDataCategories, selectedCategoryData]);
 
   // Whenever state changes
   useEffect(() => {
@@ -70,7 +116,7 @@ function HomeScreen() {
         <FlatList
           keyExtractor={(item, index) => (item.id + index).toString()} // Use a unique identifier for the key
           showsHorizontalScrollIndicator={false}
-          data={SongsWithCategory}
+          data={onlineDataCategories}
           renderItem={params => (
             <CategoryTabs
               {...params}

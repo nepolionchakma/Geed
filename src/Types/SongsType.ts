@@ -7,6 +7,6 @@ export interface SongType {
 }
 export interface SongsWithCategoryType {
   id: number;
-  title: string;
+  category_name: string;
   songs: SongType[];
 }

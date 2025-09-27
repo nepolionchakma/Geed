@@ -1,17 +1,22 @@
 [
   {
     "id": 1,
-    "title": "All",
+    "category_name": "Recommended Songs",
     "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json"
   },
   {
     "id": 2,
-    "title": "Chakma",
+    "category_name": "All",
+    "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json"
+  },
+  {
+    "id": 3,
+    "category_name": "Chakma",
     "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/chakma.json"
   },
   {
-    "id": 2,
-    "title": "Marma",
+    "id": 4,
+    "category_name": "Marma",
     "songs": "https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/marma.json"
   }
 ]
