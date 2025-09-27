@@ -1,5 +1,5 @@
 import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../Components/Header';
 import {spacing} from '../Constants/dimensions';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
@@ -18,7 +18,7 @@ import FloatingPlayer from '../Components/FloatingPlayer';
 import {PlaybackState, usePlaybackState} from 'react-native-track-player';
 import {colors} from '../Constants/Colors';
 import axios from 'axios';
-import {SongsWithCategoryType} from '../Types/SongsType';
+import {SongsWithCategoryType, SongType} from '../Types/SongsType';
 
 function HomeScreen() {
   const dispatch = useAppDispatch();
@@ -28,6 +28,15 @@ function HomeScreen() {
   const [onlineDataCategories, setOnlineDataCategories] = useState<
     SongsWithCategoryType[] | null
   >(null);
+  const [selectedCategoryName, setSelectedCategoryName] =
+    useState('Recommended Songs');
+  const [selectedCategorySongsURL, setSelectedCategorySongsURL] = useState<
+    string | null
+  >(null);
+  const [selectedCategorySongs, setSelectedCategorySongs] = useState<
+    SongType[] | null
+  >(null);
+
   // Accessing the selected category from Redux state
   const selectedCategoryData = useAppSelector(
     (state: RootState) => state.selectedSongsCategory,
@@ -36,7 +45,9 @@ function HomeScreen() {
     (state: RootState) => state.tracks.isPlayingQueue,
   );
   const handleCategoryClick = (category: string) => {
-    dispatch(setSelectedSongsCategory(category));
+    setSelectedCategoryName(category);
+    console.log(category, 'category');
+    // dispatch(setSelectedSongsCategory(category));
   };
 
   useEffect(() => {
@@ -52,49 +63,70 @@ function HomeScreen() {
     })();
   }, []);
 
-  const selectedCategorySongs = useMemo(
-    () => () => {
-      switch (selectedCategoryData.selectedSongsCategory) {
+  useEffect(() => {
+    (() => {
+      switch (selectedCategoryName) {
+        case 'Recommended Songs':
+          return setSelectedCategorySongsURL(
+            'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json',
+          );
         case 'Chakma':
-          return 'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/chakma.json';
+          return setSelectedCategorySongsURL(
+            'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/chakma.json',
+          );
         case 'Marma':
-          return 'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/marma.json';
+          return setSelectedCategorySongsURL(
+            'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/marma.json',
+          );
 
         default:
-          return 'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json';
+          return setSelectedCategorySongsURL(
+            'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/all.json',
+          );
       }
-    },
-    [selectedCategoryData.selectedSongsCategory],
-  );
+    })();
+  }, [selectedCategoryName]);
+
   useEffect(() => {
     (async () => {
       try {
-        const fetchingURL = await selectedCategorySongs();
-        const onlineData = await axios.get(fetchingURL);
-        console.log(onlineData, 'onlineData');
+        setIsLoading(true);
+        if (!selectedCategorySongsURL) {
+          return;
+        }
+        const onlineData = await axios.get(selectedCategorySongsURL);
+        setSelectedCategorySongs(onlineData.data);
       } catch (error) {
         console.log(error, 'error');
+      } finally {
+        setIsLoading(false);
       }
     })();
-  }, [selectedCategoryData.selectedSongsCategory, selectedCategorySongs]);
+  }, [selectedCategorySongsURL, selectedCategoryName]);
 
   useEffect(() => {
-    if (!onlineDataCategories) {
+    if (
+      !onlineDataCategories ||
+      !selectedCategorySongs ||
+      !selectedCategorySongsURL
+    ) {
       return;
     }
-    const filteredSongs = onlineDataCategories.find(
-      item => item.category_name === selectedCategoryData.selectedSongsCategory,
-    );
-    console.log(filteredSongs, 'filteredSongs', onlineDataCategories);
-    if (filteredSongs) {
+
+    if (selectedCategorySongs) {
       // console.log(filteredSongs.songs, 'filteredSongs.songs');
-      dispatch(setSelectedSongsViaCategory(filteredSongs.songs));
-      addTrack(filteredSongs.songs);
+      dispatch(setSelectedSongsViaCategory(selectedCategorySongs));
+      addTrack(selectedCategorySongs);
     } else {
       console.log('No matching category found');
     }
-  }, [dispatch, onlineDataCategories, selectedCategoryData]);
-
+  }, [
+    dispatch,
+    onlineDataCategories,
+    selectedCategorySongs,
+    selectedCategorySongsURL,
+  ]);
+  console.log(stateSong, 'stateSong--------');
   // Whenever state changes
   useEffect(() => {
     if (stateSong === 'loading') {
@@ -120,7 +152,7 @@ function HomeScreen() {
           renderItem={params => (
             <CategoryTabs
               {...params}
-              selectedCategory={selectedCategoryData.selectedSongsCategory}
+              selectedCategory={selectedCategoryName}
               handleCategoryClick={handleCategoryClick}
             />
           )}
