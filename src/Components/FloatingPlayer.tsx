@@ -141,7 +141,7 @@ const FloatingPlayer = () => {
             {/* <Text style={styles.textTitle}>Monster go home</Text> */}
             <Text style={styles.textTitle}>
               {activeTrack?.title?.length && activeTrack?.title?.length > 15
-                ? activeTrack?.title?.slice(0, 20) + '...'
+                ? activeTrack?.title?.slice(0, 22) + '...'
                 : activeTrack?.title}
             </Text>
             <Text style={styles.textArtist}>
@@ -179,11 +179,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.floatingBG,
     paddingVertical: spacing.xs,
-    position: 'absolute',
+    // position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0,
-    marginBottom: 73,
+    bottom: 49,
+    // marginBottom: 73,
     zIndex: 11,
   },
   slider: {
@@ -194,18 +194,18 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     justifyContent: 'space-between',
   },
   imageAndText: {
     flex: 1,
-    gap: 10,
+    gap: 5,
     flexDirection: 'row',
     alignItems: 'center',
     // paddingTop: spacing.xs,
   },
   textContainer: {
-    width: '85%',
+    width: '90%',
     paddingHorizontal: spacing.xs,
     overflow: 'hidden',
   },
