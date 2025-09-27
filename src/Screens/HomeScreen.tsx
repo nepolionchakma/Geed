@@ -1,5 +1,5 @@
-import {FlatList, StyleSheet, View} from 'react-native';
-import React, {useEffect} from 'react';
+import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import Header from '../Components/Header';
 import {spacing} from '../Constants/dimensions';
 import {SongsWithCategory} from '../Data/SongsWithCategory';
@@ -15,9 +15,14 @@ import SongsCard from '../Components/SongsCard';
 import {addTrack} from '../Services/PlaybackService';
 import Container from '../Components/Container';
 import FloatingPlayer from '../Components/FloatingPlayer';
+import {PlaybackState, usePlaybackState} from 'react-native-track-player';
+import {colors} from '../Constants/Colors';
 
 function HomeScreen() {
   const dispatch = useAppDispatch();
+  const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
+  const stateSong = 'state' in playBackState ? playBackState.state : undefined;
+  const [isLoading, setIsLoading] = useState(false);
 
   // Accessing the selected category from Redux state
   const selectedCategoryData = useAppSelector(
@@ -43,7 +48,16 @@ function HomeScreen() {
       console.log('No matching category found');
     }
   }, [dispatch, selectedCategoryData]);
-  // console.log(isPlayingQueue, 'isPlayingQueue');
+
+  // Whenever state changes
+  useEffect(() => {
+    if (stateSong === 'loading') {
+      setIsLoading(true);
+    } else if (stateSong === 'ready') {
+      setIsLoading(false);
+    }
+  }, [stateSong]);
+
   return (
     <Container
       isRefresh={true}
@@ -72,6 +86,13 @@ function HomeScreen() {
       <SongsCard
         selectedSongsViaCategory={selectedCategoryData.selectedSongsViaCategory}
       />
+      {isLoading && (
+        <ActivityIndicator
+          size="large"
+          color={colors.white}
+          style={styles.loadingIndicator}
+        />
+      )}
     </Container>
   );
 }
@@ -91,5 +112,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     overflow: 'hidden',
     marginTop: spacing.xs,
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
   },
 });
