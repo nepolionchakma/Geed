@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {colors} from '../Constants/Colors';
 import {fontSizes, iconSizes, spacing} from '../Constants/dimensions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -29,6 +29,7 @@ import TrackPlayer, {
 import Container from '../Components/Container';
 import {useAppDispatch} from '../Redux/Hooks/Hooks';
 import {setIsPlayingQueue} from '../Redux/Slices/SongSlice';
+import QueueSongsList from '../Components/QueueSongsList';
 
 export interface SongInfoProps {
   track: Track | null | undefined;
@@ -45,6 +46,7 @@ const PlayingScreen = () => {
   const min = useSharedValue(0);
   const max = useSharedValue(0);
   const dispatch = useAppDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     max.value = duration;
   }, [duration, max]);
@@ -86,6 +88,10 @@ const PlayingScreen = () => {
         dispatch(setIsPlayingQueue(true));
       }
     }
+  };
+
+  const handleQueuePress = () => {
+    setIsModalOpen(true);
   };
   // const [track, setTrack] = useState<Track | null>();
   // useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
@@ -168,6 +174,13 @@ const PlayingScreen = () => {
                   color={colors.iconPrimary}
                 />
               </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.5} onPress={handleQueuePress}>
+                <Icon
+                  name={'queue-music'}
+                  size={iconSizes.lg}
+                  color={colors.iconPrimary}
+                />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.contentTime}>
@@ -216,6 +229,11 @@ const PlayingScreen = () => {
           </View>
         </View>
       </View>
+      <QueueSongsList
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
+      {/* Queue List  */}
     </Container>
   );
 };

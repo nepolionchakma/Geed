@@ -105,9 +105,7 @@ function HomeScreen() {
       }
     })();
   }, [selectedCategorySongsURL, selectedCategoryName]);
-  TrackPlayer.getQueue().then(queue => {
-    console.log(queue, 'queue');
-  });
+
   // console.log(selectedCategorySongs, 'selectedCategorySongs');
   useEffect(() => {
     (async () => {

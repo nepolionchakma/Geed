@@ -56,7 +56,7 @@ const FloatingPlayer = () => {
   const data = useAppSelector((state: RootState) => state.tracks);
   const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
   const state = 'state' in playBackState ? playBackState.state : undefined;
-
+  console.log(state, 'state');
   const skipToNext = async () => {
     await TrackPlayer.skipToNext();
   };
@@ -81,7 +81,7 @@ const FloatingPlayer = () => {
   };
 
   const netInfo = useNetInfo();
-  console.log(netInfo, 'netInfo');
+  // console.log(netInfo, 'netInfo');
   useEffect(() => {
     if (netInfo?.isConnected === false) {
       return Alert.alert(

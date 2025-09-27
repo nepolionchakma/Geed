@@ -3,6 +3,8 @@ export const colors = {
   bottomTab: '#112248ff',
   white: '#fff',
   floatingBG: '#213561ff',
+  queueBG: '#1d2b4aab',
+  queueBG2: '#21356172',
   textPrimary: '#EAF0FF',
   textSecondary: '#A5C0FF',
   iconPrimary: '#EAF0FF',

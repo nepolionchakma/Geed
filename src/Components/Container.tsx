@@ -95,7 +95,7 @@ const Container: React.FC<ContainerNewProps> = ({
   const dispatch = useAppDispatch();
   const activeTrack = useActiveTrack();
   // const [isPlayingQueue, setIsPlayingQueue] = useState(false);
-  // console.log(isPlayingQueue, 'isPlayingQueue---');
+  console.log(activeTrack, 'activeTrack---');
   const netInfo = useNetInfo();
 
   useEffect(() => {
