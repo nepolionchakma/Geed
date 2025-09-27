@@ -14,6 +14,7 @@ import {SongType} from '../Types/SongsType';
 import {colors} from '../Constants/Colors';
 import {setIsPlayingQueue} from '../Redux/Slices/SongSlice';
 import {useAppDispatch} from '../Redux/Hooks/Hooks';
+import {addTrack} from '../Services/PlaybackService';
 // interface SongType {
 //   selectedSongsViaCategory: SongType[];
 // }
@@ -22,10 +23,14 @@ const SongsCard = ({selectedSongsViaCategory}: any) => {
   const dispatch = useAppDispatch();
   const handlePlayTrack = async (item: SongType) => {
     try {
-      const songs = await TrackPlayer.getQueue();
+      await TrackPlayer.reset();
+      await addTrack(selectedSongsViaCategory);
+      const queueSongs = await TrackPlayer.getQueue();
 
       // Check if the song is already in the queue
-      const trackIndex = songs.findIndex((song: any) => song.id === item.id);
+      const trackIndex = queueSongs.findIndex(
+        (song: any) => song.id === item.id,
+      );
 
       if (trackIndex !== -1) {
         // If the track is already in the queue, start playing it

@@ -6,7 +6,6 @@ import {requestPermissions} from '../Utils/FilePermission';
 import AudioModule from 'react-native-local-audio';
 import {useAppDispatch, useAppSelector} from '../Redux/Hooks/Hooks';
 import {setLocalSongs} from '../Redux/Slices/LocalSongs';
-import {addTrack} from '../Services/PlaybackService';
 import {RootState} from '../Redux/Store/Store';
 import SongsCard from '../Components/SongsCard';
 import Container from '../Components/Container';
@@ -21,6 +20,7 @@ const LocalSongsLibrary = () => {
   const isPlayingQueue = useAppSelector(
     (state: RootState) => state.tracks.isPlayingQueue,
   );
+
   // Ensure status bar is not transparent and looks good across devices
   // useEffect(() => {
   //   if (Platform.OS === 'ios') {
@@ -48,7 +48,6 @@ const LocalSongsLibrary = () => {
           return;
         } else {
           dispatch(setLocalSongs(songsOrError));
-          addTrack(songsOrError);
         }
       } catch (error) {
         console.error('Error fetching audio files:', error);

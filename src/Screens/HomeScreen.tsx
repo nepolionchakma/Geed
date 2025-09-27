@@ -2,20 +2,22 @@ import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../Components/Header';
 import {spacing} from '../Constants/dimensions';
-import {SongsWithCategory} from '../Data/SongsWithCategory';
+// import {SongsWithCategory} from '../Data/SongsWithCategory';
 
 import {useAppDispatch, useAppSelector} from '../Redux/Hooks/Hooks';
-import {
-  setSelectedSongsCategory,
-  setSelectedSongsViaCategory,
-} from '../Redux/Slices/SelectedCategory';
+// import {
+//   setSelectedSongsCategory,
+//   setSelectedSongsViaCategory,
+// } from '../Redux/Slices/SelectedCategory';
 import {RootState} from '../Redux/Store/Store';
 import CategoryTabs from '../Components/CategoryTabs';
 import SongsCard from '../Components/SongsCard';
-import {addTrack} from '../Services/PlaybackService';
 import Container from '../Components/Container';
 import FloatingPlayer from '../Components/FloatingPlayer';
-import {PlaybackState, usePlaybackState} from 'react-native-track-player';
+import TrackPlayer, {
+  PlaybackState,
+  usePlaybackState,
+} from 'react-native-track-player';
 import {colors} from '../Constants/Colors';
 import axios from 'axios';
 import {SongsWithCategoryType, SongType} from '../Types/SongsType';
@@ -38,15 +40,15 @@ function HomeScreen() {
   >(null);
 
   // Accessing the selected category from Redux state
-  const selectedCategoryData = useAppSelector(
-    (state: RootState) => state.selectedSongsCategory,
-  );
+  // const selectedCategoryData = useAppSelector(
+  //   (state: RootState) => state.selectedSongsCategory,
+  // );
   const isPlayingQueue = useAppSelector(
     (state: RootState) => state.tracks.isPlayingQueue,
   );
   const handleCategoryClick = (category: string) => {
     setSelectedCategoryName(category);
-    console.log(category, 'category');
+    // console.log(category, 'category');
     // dispatch(setSelectedSongsCategory(category));
   };
 
@@ -55,8 +57,8 @@ function HomeScreen() {
       try {
         const fetchingURL =
           'https://raw.githubusercontent.com/nepolionchakma/Geed/main/src/Data/categories.json';
-        const onlineData = await axios.get(fetchingURL);
-        setOnlineDataCategories(onlineData.data);
+        const fetchedonlineCategories = await axios.get(fetchingURL);
+        setOnlineDataCategories(fetchedonlineCategories.data);
       } catch (error) {
         console.log(error, 'error');
       }
@@ -103,30 +105,40 @@ function HomeScreen() {
       }
     })();
   }, [selectedCategorySongsURL, selectedCategoryName]);
-
+  TrackPlayer.getQueue().then(queue => {
+    console.log(queue, 'queue');
+  });
+  // console.log(selectedCategorySongs, 'selectedCategorySongs');
   useEffect(() => {
-    if (
-      !onlineDataCategories ||
-      !selectedCategorySongs ||
-      !selectedCategorySongsURL
-    ) {
-      return;
-    }
+    (async () => {
+      try {
+        if (
+          !onlineDataCategories ||
+          !selectedCategorySongs ||
+          !selectedCategorySongsURL
+        ) {
+          return;
+        }
 
-    if (selectedCategorySongs) {
-      // console.log(filteredSongs.songs, 'filteredSongs.songs');
-      dispatch(setSelectedSongsViaCategory(selectedCategorySongs));
-      addTrack(selectedCategorySongs);
-    } else {
-      console.log('No matching category found');
-    }
+        if (selectedCategorySongs) {
+          // console.log(filteredSongs.songs, 'filteredSongs.songs');
+          // dispatch(setSelectedSongsViaCategory(selectedCategorySongs));
+          // await addTrack(selectedCategorySongs);
+        } else {
+          console.log('No matching category found');
+        }
+      } catch (error) {
+        console.log(error, 'error');
+      }
+    })();
   }, [
     dispatch,
     onlineDataCategories,
     selectedCategorySongs,
     selectedCategorySongsURL,
   ]);
-  console.log(stateSong, 'stateSong--------');
+
+  // console.log(stateSong, 'stateSong--------');
   // Whenever state changes
   useEffect(() => {
     if (stateSong === 'loading') {
@@ -161,9 +173,7 @@ function HomeScreen() {
         />
       </View>
       {/* Songs List Component */}
-      <SongsCard
-        selectedSongsViaCategory={selectedCategoryData.selectedSongsViaCategory}
-      />
+      <SongsCard selectedSongsViaCategory={selectedCategorySongs || []} />
       {isLoading && (
         <ActivityIndicator
           size="large"
