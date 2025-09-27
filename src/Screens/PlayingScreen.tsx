@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {colors} from '../Constants/Colors';
 import {fontSizes, iconSizes, spacing} from '../Constants/dimensions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -103,14 +103,14 @@ const PlayingScreen = () => {
   //       break;
   //   }
   // });
-  if (!activeTrack) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={colors.textPrimary} />
-      </View>
-    );
-  }
-
+  // if (!activeTrack) {
+  //   return (
+  //     <View style={styles.loading}>
+  //       <ActivityIndicator size="large" color={colors.textPrimary} />
+  //     </View>
+  //   );
+  // }
+  console.log(activeTrack, 'activeTrack');
   return (
     <Container isRefresh={true} isScrollView={false} style={styles.container}>
       <View style={styles.headerIcons}>
@@ -233,6 +233,13 @@ const PlayingScreen = () => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
+      {state === State.Loading && (
+        <ActivityIndicator
+          size="large"
+          color={colors.white}
+          style={styles.loadingIndicator}
+        />
+      )}
       {/* Queue List  */}
     </Container>
   );
@@ -338,5 +345,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.background,
+  },
+  loadingIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
   },
 });

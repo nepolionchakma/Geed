@@ -9,12 +9,17 @@ import {
 } from 'react-native';
 import React from 'react';
 import {spacing} from '../Constants/dimensions';
-import TrackPlayer, {useActiveTrack} from 'react-native-track-player';
+import TrackPlayer, {
+  PlaybackState,
+  useActiveTrack,
+  usePlaybackState,
+} from 'react-native-track-player';
 import {SongType} from '../Types/SongsType';
 import {colors} from '../Constants/Colors';
 import {setIsPlayingQueue} from '../Redux/Slices/SongSlice';
 import {useAppDispatch} from '../Redux/Hooks/Hooks';
 import {addTrack} from '../Services/PlaybackService';
+import LottieView from 'lottie-react-native';
 // interface SongType {
 //   selectedSongsViaCategory: SongType[];
 // }
@@ -22,6 +27,8 @@ const QueueSongsCard = ({selectedSongsViaCategory}: any) => {
   const isDark = useColorScheme() === 'dark';
   const dispatch = useAppDispatch();
   const activeTrack = useActiveTrack();
+  const playBackState: PlaybackState | {state: undefined} = usePlaybackState();
+  const state = 'state' in playBackState ? playBackState.state : undefined;
 
   const handlePlayTrack = async (item: SongType) => {
     try {
@@ -67,19 +74,30 @@ const QueueSongsCard = ({selectedSongsViaCategory}: any) => {
                   backgroundColor: isDark ? colors.bottomTab : colors.queueBG,
                 },
               ]}>
-              <Image
-                source={
-                  require('../Assets/logo1.jpg')
-                  // { uri: `${item.artwork} `, }
-                }
-                style={styles.image}
-              />
-              <View style={styles.textContainer}>
-                <Text style={styles.text}>{item.title}</Text>
-                <View>
-                  <Text style={styles.text}>{item.artist}</Text>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                <Image
+                  source={
+                    require('../Assets/logo1.jpg')
+                    // { uri: `${item.artwork} `, }
+                  }
+                  style={styles.image}
+                />
+                <View style={styles.textContainer}>
+                  <Text style={styles.text}>{item.title}</Text>
+                  <View>
+                    <Text style={styles.text}>{item.artist}</Text>
+                  </View>
                 </View>
               </View>
+              {activeTrack?.title === item.title && state === 'playing' && (
+                <LottieView
+                  source={require('../Assets/Animations/Music.json')}
+                  style={{width: '10%', height: '100%'}}
+                  autoPlay
+                  loop
+                />
+              )}
             </TouchableOpacity>
           );
         }}
@@ -99,6 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   loadingContainer: {
     flex: 1,

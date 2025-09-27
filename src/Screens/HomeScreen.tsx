@@ -14,10 +14,7 @@ import CategoryTabs from '../Components/CategoryTabs';
 import SongsCard from '../Components/SongsCard';
 import Container from '../Components/Container';
 import FloatingPlayer from '../Components/FloatingPlayer';
-import TrackPlayer, {
-  PlaybackState,
-  usePlaybackState,
-} from 'react-native-track-player';
+import {PlaybackState, usePlaybackState} from 'react-native-track-player';
 import {colors} from '../Constants/Colors';
 import axios from 'axios';
 import {SongsWithCategoryType, SongType} from '../Types/SongsType';

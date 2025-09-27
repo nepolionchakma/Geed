@@ -1,7 +1,6 @@
-import {Modal, StyleSheet, Text, View} from 'react-native';
+import {Modal, StyleSheet, View} from 'react-native';
 import React, {Dispatch, FC, SetStateAction, useEffect, useState} from 'react';
 import TrackPlayer, {Track} from 'react-native-track-player';
-import SongsCard from './SongsCard';
 import QueueSongsCard from './QueueSongsCard';
 
 interface QueueSongsListProps {
@@ -30,22 +29,8 @@ const QueueSongsList: FC<QueueSongsListProps> = ({
         setIsModalOpen(!isModalOpen);
         console.log('Modal has been closed.');
       }}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          // backgroundColor: 'rgba(252, 0, 0, 1)',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        }}>
-        <View
-          style={{
-            height: '70%',
-            width: '90%',
-            backgroundColor: '#21223def',
-            borderRadius: 10,
-            alignItems: 'center',
-          }}>
+      <View style={styles.centeredView}>
+        <View style={styles.bg}>
           <QueueSongsCard selectedSongsViaCategory={queueSongs} />
         </View>
       </View>
@@ -55,4 +40,19 @@ const QueueSongsList: FC<QueueSongsListProps> = ({
 
 export default QueueSongsList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'rgba(252, 0, 0, 1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  bg: {
+    height: '70%',
+    width: '90%',
+    backgroundColor: '#21223def',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+});
